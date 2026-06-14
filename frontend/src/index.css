@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-ink antialiased;
+  margin: 0;
+}
+
+.card {
+  @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+}
+
+.stat-label {
+  @apply text-xs font-medium uppercase tracking-wide text-ink-mute;
+}
+
+.pill {
+  @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors;
+}
+.btn-primary {
+  @apply btn bg-brand text-white hover:bg-brand-dark;
+}
+.btn-ghost {
+  @apply btn border border-slate-200 bg-white text-ink-soft hover:bg-slate-50;
+}
+
+table.data {
+  @apply w-full text-sm;
+}
+table.data th {
+  @apply text-left font-semibold text-ink-mute px-3 py-2 border-b border-slate-200 whitespace-nowrap;
+}
+table.data td {
+  @apply px-3 py-2 border-b border-slate-100 whitespace-nowrap;
+}
+table.data tr:hover td {
+  @apply bg-slate-50;
+}

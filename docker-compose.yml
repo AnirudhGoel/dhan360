@@ -1,0 +1,16 @@
+# Self-host dhan360 with one command:  docker compose up --build
+# Then open http://localhost:8000 . Your data lives in the local ./data volume — nothing leaves
+# your machine.
+
+services:
+  dhan360:
+    build: .
+    image: dhan360:latest
+    container_name: dhan360
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+    environment:
+      - DHAN360_DATA_DIR=/data
+    restart: unless-stopped

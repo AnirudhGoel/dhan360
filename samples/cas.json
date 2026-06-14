@@ -1,0 +1,86 @@
+{
+  "_comment": "Anonymized casparser-style CAS JSON. Values are illustrative. Drop your own real export here (or upload it in the app) to replace.",
+  "statement_period": {"from": "2020-01-01", "to": "2024-03-31"},
+  "investor_info": {"name": "Sample Investor", "email": "investor@example.com"},
+  "folios": [
+    {
+      "folio": "10234567/0",
+      "amc": "PPFAS Mutual Fund",
+      "PAN": "ABCDE1234F",
+      "schemes": [
+        {"scheme": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth", "isin": "INF879O01027", "amfi": "122639", "advisor": "DIRECT", "type": "EQUITY",
+         "open": 0, "close": 2200.0, "valuation": {"date": "2024-03-31", "nav": 72.5, "value": 159500.0},
+         "transactions": [{"date": "2021-01-15", "amount": 100000.0, "units": 1600.0, "type": "PURCHASE"}, {"date": "2022-06-10", "amount": 20000.0, "units": 600.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "991234567",
+      "amc": "HDFC Mutual Fund",
+      "schemes": [
+        {"scheme": "HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth", "isin": "INF179K01BE2", "amfi": "118989", "advisor": "DIRECT", "type": "EQUITY",
+         "open": 0, "close": 900.0, "valuation": {"date": "2024-03-31", "nav": 145.0, "value": 130500.0},
+         "transactions": [{"date": "2021-03-01", "amount": 80000.0, "units": 700.0, "type": "PURCHASE"}, {"date": "2022-09-01", "amount": 15000.0, "units": 200.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "880011223",
+      "amc": "Axis Mutual Fund",
+      "schemes": [
+        {"scheme": "Axis Small Cap Fund - Direct Plan - Growth", "isin": "INF846K01EW2", "amfi": "125354", "advisor": "DIRECT", "type": "EQUITY",
+         "open": 0, "close": 1400.0, "valuation": {"date": "2024-03-31", "nav": 88.0, "value": 123200.0},
+         "transactions": [{"date": "2021-05-01", "amount": 70000.0, "units": 1200.0, "type": "PURCHASE"}, {"date": "2023-01-01", "amount": 12000.0, "units": 200.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "773344556",
+      "amc": "Mirae Asset Mutual Fund",
+      "schemes": [
+        {"scheme": "Mirae Asset Large & Midcap Fund - Direct Plan - Growth", "isin": "INF769K01010", "amfi": "119598", "advisor": "DIRECT", "type": "EQUITY",
+         "open": 0, "close": 1100.0, "valuation": {"date": "2024-03-31", "nav": 105.0, "value": 115500.0},
+         "transactions": [{"date": "2021-02-01", "amount": 85000.0, "units": 950.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "665544332",
+      "amc": "ICICI Prudential Mutual Fund",
+      "schemes": [
+        {"scheme": "ICICI Prudential Nifty 50 Index Fund - Direct Plan - Growth", "isin": "INF109K012R6", "amfi": "120505", "advisor": "DIRECT", "type": "EQUITY",
+         "open": 0, "close": 3000.0, "valuation": {"date": "2024-03-31", "nav": 28.5, "value": 85500.0},
+         "transactions": [{"date": "2022-01-01", "amount": 60000.0, "units": 2600.0, "type": "PURCHASE"}]},
+        {"scheme": "ICICI Prudential Corporate Bond Fund - Direct Plan - Growth", "isin": "INF109K01Z48", "amfi": "135781", "advisor": "DIRECT", "type": "DEBT",
+         "open": 0, "close": 3500.0, "valuation": {"date": "2024-03-31", "nav": 27.0, "value": 94500.0},
+         "transactions": [{"date": "2022-04-01", "amount": 80000.0, "units": 3200.0, "type": "PURCHASE"}]},
+        {"scheme": "ICICI Prudential Balanced Advantage Fund - Direct Plan - Growth", "isin": "INF109K01T07", "amfi": "118533", "advisor": "DIRECT", "type": "HYBRID",
+         "open": 0, "close": 4000.0, "valuation": {"date": "2024-03-31", "nav": 62.0, "value": 248000.0},
+         "transactions": [{"date": "2021-06-01", "amount": 200000.0, "units": 3600.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "554433221",
+      "amc": "Motilal Oswal Mutual Fund",
+      "schemes": [
+        {"scheme": "Motilal Oswal Nasdaq 100 Fund of Fund - Direct Plan - Growth", "isin": "INF247L01AB9", "amfi": "147794", "advisor": "DIRECT", "type": "OTHER",
+         "open": 0, "close": 5000.0, "valuation": {"date": "2024-03-31", "nav": 32.0, "value": 160000.0},
+         "transactions": [{"date": "2021-07-01", "amount": 100000.0, "units": 4000.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "443322110",
+      "amc": "SBI Mutual Fund",
+      "schemes": [
+        {"scheme": "SBI Gold Fund - Direct Plan - Growth", "isin": "INF200K01T28", "amfi": "119775", "advisor": "DIRECT", "type": "OTHER",
+         "open": 0, "close": 4500.0, "valuation": {"date": "2024-03-31", "nav": 22.0, "value": 99000.0},
+         "transactions": [{"date": "2021-08-01", "amount": 80000.0, "units": 4000.0, "type": "PURCHASE"}]}
+      ]
+    },
+    {
+      "folio": "332211009",
+      "amc": "Nippon India Mutual Fund",
+      "schemes": [
+        {"scheme": "Nippon India Liquid Fund - Direct Plan - Growth", "isin": "INF204K01XR2", "amfi": "120053", "advisor": "DIRECT", "type": "DEBT",
+         "open": 0, "close": 30.0, "valuation": {"date": "2024-03-31", "nav": 5600.0, "value": 168000.0},
+         "transactions": [{"date": "2023-10-01", "amount": 160000.0, "units": 29.0, "type": "PURCHASE"}]}
+      ]
+    }
+  ]
+}
