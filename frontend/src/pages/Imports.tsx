@@ -121,6 +121,8 @@ export default function Imports() {
         <ManualEntry onDone={(text) => { setMsg({ kind: "ok", text }); refreshAll(); }} />
       </div>
 
+      <GuidedCAS />
+
       <Card title="Import history & reconciliation">
         {historyQ.isLoading ? (
           <Loading />
@@ -159,6 +161,55 @@ export default function Imports() {
         )}
       </Card>
     </>
+  );
+}
+
+const MF_CAS_LINKS = [
+  { name: "CAMS (CAMS + KFintech consolidated)", url: "https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" },
+  { name: "KFintech CAS", url: "https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" },
+  { name: "MF Central", url: "https://app.mfcentral.com/" },
+];
+const DEMAT_CAS_LINKS = [
+  { name: "NSDL e-CAS", url: "https://nsdlcas.nsdl.com/" },
+  { name: "CDSL e-CAS", url: "https://www.cdslindia.com/CAS/LoginNew.aspx" },
+];
+
+function LinkRow({ name, url }: { name: string; url: string }) {
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer"
+      className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm text-ink-soft hover:border-brand hover:text-brand transition-colors">
+      <span>{name}</span>
+      <span className="text-xs">open ↗</span>
+    </a>
+  );
+}
+
+function GuidedCAS() {
+  return (
+    <Card title="Don't have your CAS yet? Generate one" className="mb-4">
+      <p className="text-sm text-ink-mute mb-3">
+        A CAS (Consolidated Account Statement) is requested on the official RTA/depository site and
+        emailed to your <span className="font-medium">registered email</span> as a password-protected
+        PDF. dhan360 can't (and shouldn't) request it for you — but here's exactly where to do it, then
+        upload the PDF above.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div className="text-xs font-semibold text-ink-soft mb-2">Mutual funds (CAMS / KFintech) — supported now</div>
+          <div className="space-y-2">{MF_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
+        </div>
+        <div>
+          <div className="text-xs font-semibold text-ink-soft mb-2">Demat + MF (NSDL / CDSL) — parser coming soon</div>
+          <div className="space-y-2">{DEMAT_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
+        </div>
+      </div>
+      <ol className="mt-4 text-sm text-ink-soft list-decimal pl-5 space-y-1">
+        <li>Open the relevant site and request a <span className="font-medium">Detailed</span> statement for your desired period.</li>
+        <li>Enter your email &amp; PAN, and <span className="font-medium">set a password you'll remember</span> (often your PAN by default).</li>
+        <li>Open the email from the RTA/depository and download the PDF attachment.</li>
+        <li>Upload it above (Mutual fund CAS → <span className="font-medium">CAS PDF</span>) and enter that password.</li>
+      </ol>
+    </Card>
   );
 }
 
