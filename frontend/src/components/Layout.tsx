@@ -7,6 +7,7 @@ const NAV = [
   { to: "/mutual-funds", label: "Mutual Funds", icon: "◴" },
   { to: "/stocks-etfs", label: "Stocks & ETFs", icon: "↗" },
   { to: "/rebalancing", label: "Rebalancing", icon: "⇄" },
+  { to: "/analytics", label: "Analytics (XIRR)", icon: "∿" },
   { to: "/reports", label: "Reports", icon: "🖶" },
   { to: "/imports", label: "Data & Imports", icon: "⤓" },
   { to: "/settings", label: "Settings", icon: "⚙" },

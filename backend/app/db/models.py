@@ -14,6 +14,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from sqlalchemy import (
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -207,3 +208,62 @@ class Setting(Base):
 
     key: Mapped[str] = mapped_column(String(80), primary_key=True)
     value: Mapped[str] = mapped_column(Text)
+
+
+class Transaction(Base):
+    """A single dated cashflow for a holding — the raw material for XIRR.
+
+    ``amount`` is the rupee cashflow with sign from the *investor's* perspective:
+    a purchase is negative (money out), a redemption/sell/dividend is positive (money in).
+    Splits/bonuses are *not* transactions (no cashflow) — they live in ``CorporateAction``.
+    """
+
+    __tablename__ = "transactions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"), index=True)
+    account_id: Mapped[int | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+
+    date: Mapped[datetime] = mapped_column(Date, index=True)
+    kind: Mapped[str] = mapped_column(String(20))  # buy | sell | dividend | switch_in | switch_out
+    units: Mapped[float | None] = mapped_column(Float, nullable=True)
+    amount: Mapped[float] = mapped_column(Float)   # signed cashflow (− out / + in)
+    price: Mapped[float | None] = mapped_column(Float, nullable=True)  # per-unit price/NAV at txn
+    folio: Mapped[str | None] = mapped_column(String(80), nullable=True)
+
+    source: Mapped[str] = mapped_column(String(40))
+    import_id: Mapped[int | None] = mapped_column(ForeignKey("imports.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class Price(Base):
+    """Local cache of a day-end price/NAV for an instrument (populated lazily by providers)."""
+
+    __tablename__ = "prices"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"), index=True)
+    date: Mapped[datetime] = mapped_column(Date, index=True)
+    close: Mapped[float] = mapped_column(Float)  # NAV for funds, close price for stocks/ETFs
+    source: Mapped[str] = mapped_column(String(40))  # amfi | mfapi | kite | manual
+
+    __table_args__ = (UniqueConstraint("instrument_id", "date", name="uq_price_instrument_date"),)
+
+
+class CorporateAction(Base):
+    """A split/bonus that changes share count (and price) without a cashflow.
+
+    ``ratio`` is the multiplier applied to share count: a 1:5 split or 4:1 bonus that turns
+    1 share into 5 has ratio 5.0. Used to reconstruct correct quantity across the event.
+    """
+
+    __tablename__ = "corporate_actions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"), index=True)
+    date: Mapped[datetime] = mapped_column(Date, index=True)
+    kind: Mapped[str] = mapped_column(String(20))  # split | bonus
+    ratio: Mapped[float] = mapped_column(Float)     # new_count / old_count
+    source: Mapped[str] = mapped_column(String(40), default="inferred")  # kite | manual | inferred
+
+    __table_args__ = (UniqueConstraint("instrument_id", "date", "kind", name="uq_corpaction"),)

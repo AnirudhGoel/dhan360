@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date as date_cls
+
 from pydantic import BaseModel, Field
 
 from app.domain.taxonomy import InstrumentType, Source
@@ -14,6 +16,20 @@ class ParsedLookthrough(BaseModel):
     asset_class: str = "Equity"
     market_cap: str | None = None
     sector: str | None = None
+
+
+class ParsedTxn(BaseModel):
+    """A dated cashflow tied to the holding it belongs to (for XIRR).
+
+    ``amount`` is signed from the investor's perspective: purchase negative (out),
+    sell/redemption/dividend positive (in).
+    """
+
+    date: date_cls
+    kind: str  # buy | sell | dividend | switch_in | switch_out
+    amount: float
+    units: float | None = None
+    price: float | None = None
 
 
 class ParsedHolding(BaseModel):
@@ -50,6 +66,7 @@ class ParsedHolding(BaseModel):
     market_cap_hint: str | None = None
 
     lookthrough: list[ParsedLookthrough] = Field(default_factory=list)
+    transactions: list[ParsedTxn] = Field(default_factory=list)
     raw: dict = Field(default_factory=dict)
 
 

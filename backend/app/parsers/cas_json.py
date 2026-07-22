@@ -20,8 +20,10 @@ Reference shape (abridged)::
 
 from __future__ import annotations
 
+from datetime import date, datetime
+
 from app.domain.taxonomy import InstrumentType, Source
-from app.parsers.base import ParsedHolding, ParseResult
+from app.parsers.base import ParsedHolding, ParsedTxn, ParseResult
 
 
 def _plan_from(advisor: str | None, scheme_name: str) -> str:
@@ -29,6 +31,22 @@ def _plan_from(advisor: str | None, scheme_name: str) -> str:
     if a == "DIRECT" or "direct" in scheme_name.lower():
         return "direct"
     return "regular"
+
+
+def _parse_date(value: str | None) -> date | None:
+    if not value:
+        return None
+    s = str(value).strip()
+    for fmt in ("%Y-%m-%d", "%d-%b-%Y", "%d-%m-%Y", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(s, fmt).date()
+        except ValueError:
+            continue
+    # ISO datetime fallback
+    try:
+        return datetime.fromisoformat(s).date()
+    except ValueError:
+        return None
 
 
 def parse_dict(
@@ -60,20 +78,41 @@ def parse_dict(
             cur_val = valuation.get("value")
             nav = valuation.get("nav")
 
-            # Net invested ≈ sum of transaction amounts (purchases +ve, redemptions -ve).
+            # Parse transactions once: net invested (CAS sign: purchases +ve, redemptions -ve)
+            # AND per-txn XIRR cashflows (investor sign: purchase = money OUT = negative).
             invested = None
+            parsed_txns: list[ParsedTxn] = []
             txns = scheme.get("transactions") or []
             if txns:
                 total = 0.0
                 seen = False
                 for t in txns:
                     amt = t.get("amount")
-                    if amt is not None:
-                        try:
-                            total += float(amt)
-                            seen = True
-                        except (TypeError, ValueError):
-                            pass
+                    if amt is None:
+                        continue
+                    try:
+                        amt = float(amt)
+                    except (TypeError, ValueError):
+                        continue
+                    total += amt
+                    seen = True
+                    tdate = _parse_date(t.get("date"))
+                    if tdate is None:
+                        continue
+                    ttype = (t.get("type") or "").upper()
+                    if "DIVIDEND" in ttype and "PAYOUT" in ttype:
+                        kind = "dividend"
+                    elif amt >= 0:
+                        kind = "buy"
+                    else:
+                        kind = "sell"
+                    units = t.get("units")
+                    parsed_txns.append(ParsedTxn(
+                        date=tdate,
+                        kind=kind,
+                        amount=round(-amt, 2),  # investor perspective: purchase negative
+                        units=float(units) if units is not None else None,
+                    ))
                 invested = round(total, 2) if seen else None
 
             result.holdings.append(
@@ -95,6 +134,7 @@ def parse_dict(
                     account_identifier=folio_no,
                     institution=amc,
                     category_hint=scheme.get("type"),  # coarse EQUITY/DEBT/HYBRID hint
+                    transactions=parsed_txns,
                     raw={"rta": scheme.get("rta"), "scheme_type": scheme.get("type")},
                 )
             )

@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.api import analytics as analytics_router
 from app.api import config as config_router
 from app.api import imports as imports_router
 from app.api import portfolio as portfolio_router
@@ -43,6 +44,7 @@ def health() -> dict:
 app.include_router(imports_router.router)
 app.include_router(portfolio_router.router)
 app.include_router(config_router.router)
+app.include_router(analytics_router.router)
 
 
 # ---- serve the built SPA (production) ---------------------------------------------

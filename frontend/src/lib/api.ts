@@ -87,6 +87,27 @@ export const api = {
       `/api/holdings${q ? `?${q}` : ""}`
     );
   },
+  xirr: (scope: string, from?: string, to?: string) => {
+    const q = new URLSearchParams({ scope });
+    if (from) q.set("from", from);
+    if (to) q.set("to", to);
+    return http<{
+      scope: string;
+      is_period: boolean;
+      note: string;
+      results: {
+        label: string;
+        xirr: number | null;
+        current_value: number;
+        invested: number;
+        covered_value: number;
+        coverage_pct: number;
+        start_value: number;
+        end_value: number;
+        flags: Record<string, boolean>;
+      }[];
+    }>(`/api/analytics/xirr?${q.toString()}`);
+  },
   mutualFunds: () => http<any>("/api/mutual-funds"),
   stocks: () => http<any>("/api/stocks"),
   concentration: () => http<any>("/api/concentration"),
