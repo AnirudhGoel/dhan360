@@ -9,8 +9,8 @@ import fixtures from "../demo/fixtures.json";
 
 export const DEMO = import.meta.env.VITE_DEMO === "true";
 
-// Public repo URL — update in this one place once the GitHub repo is created.
-export const REPO_URL = "https://github.com/dhan360/dhan360";
+// Public repo URL — update in this one place if the repo moves (e.g. to a dhan360 org).
+export const REPO_URL = "https://github.com/AnirudhGoel/dhan360";
 
 const MAP = fixtures as Record<string, any>;
 

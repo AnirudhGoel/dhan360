@@ -11,12 +11,14 @@ bundled sample portfolio. No server, no database, no user data — so it's safe 
 
 ## One-time steps (yours — needs your accounts)
 
-1. **Create the GitHub repo and push** (see also the top-level "Push to GitHub" steps):
+1. **Create the empty public repo** on github.com (`AnirudhGoel/dhan360`, no README/license/.gitignore),
+   then push over SSH:
    ```bash
-   gh repo create dhan360 --public --source=. --remote=origin --push
+   git remote add origin git@github.com:AnirudhGoel/dhan360.git
+   git push -u origin main
    ```
-   If your repo lives somewhere other than `github.com/dhan360/dhan360`, update the one constant
-   `REPO_URL` in `frontend/src/lib/demo.ts` (used by the footer / demo banner links).
+   If the repo ever moves (e.g. to a `dhan360` org), update the one constant `REPO_URL` in
+   `frontend/src/lib/demo.ts` (used by the footer / demo banner links).
 
 2. **Enable GitHub Pages via Actions:** repo → Settings → Pages → *Build and deployment* →
    Source = **GitHub Actions**. The workflow will run and publish on the next push (or trigger it
@@ -25,7 +27,7 @@ bundled sample portfolio. No server, no database, no user data — so it's safe 
 3. **Point the domain:** at your DNS provider for `dhan360.in`, add the GitHub Pages records:
    - Apex `dhan360.in` → four `A` records: `185.199.108.153`, `185.199.109.153`,
      `185.199.110.153`, `185.199.111.153` (and/or the `AAAA` IPv6 equivalents).
-   - `www` → `CNAME` to `<your-username>.github.io`.
+   - `www` → `CNAME` to `AnirudhGoel.github.io`.
    Then repo → Settings → Pages → Custom domain = `dhan360.in`, and tick **Enforce HTTPS** once
    the certificate is issued.
 
