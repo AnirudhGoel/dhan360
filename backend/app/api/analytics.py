@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.db.database import get_session
+from app.portfolio.performance import mf_performance_curve
 from app.portfolio.xirr import XirrEngine, XirrResult
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -30,6 +31,12 @@ def _serialize(r: XirrResult) -> dict:
             "insufficient_data": r.flags.insufficient_data,
         },
     }
+
+
+@router.get("/performance")
+def get_performance(db: Session = Depends(get_session)) -> dict:
+    """Unitized mutual-fund performance curve (Zerodha-Console style)."""
+    return mf_performance_curve(db)
 
 
 @router.get("/xirr")

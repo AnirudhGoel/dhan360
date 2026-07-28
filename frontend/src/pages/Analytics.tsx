@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
 import { formatINR, formatPct, signClass } from "../lib/format";
 import { DEMO } from "../lib/demo";
+import PerformanceCurve from "../components/PerformanceCurve";
 
 type Preset = { label: string; from?: string; to?: string };
 
@@ -62,9 +63,13 @@ export default function Analytics() {
   return (
     <>
       <PageHeader
-        title="Analytics — XIRR"
-        subtitle="Money-weighted annualized returns over any period. Mutual-fund figures use actual NAV; direct equity needs a price feed (coming with Kite)."
+        title="Analytics"
+        subtitle="Performance curve and money-weighted (XIRR) returns. Mutual-fund figures use actual NAV; direct equity needs a price feed (coming with Kite)."
       />
+
+      <div className="mb-4">
+        <PerformanceCurve />
+      </div>
 
       <Card className="mb-4">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">

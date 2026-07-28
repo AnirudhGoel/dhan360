@@ -69,6 +69,8 @@ def main() -> None:
     cap("/api/rebalance", {"mode": "rebalance", "new_money": 0})
     cap("/api/rebalance", {"mode": "new_money", "new_money": 100000})
 
+    cap("/api/analytics/performance")
+
     # XIRR — every scope, lifetime + the fixed (date-independent) demo period.
     for scope in ("portfolio", "asset_class", "instrument"):
         cap("/api/analytics/xirr", {"scope": scope})

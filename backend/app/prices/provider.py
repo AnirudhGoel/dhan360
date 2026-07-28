@@ -83,6 +83,13 @@ class AmfiNavProvider:
             self._series_cache[scheme_code] = self._fetch(scheme_code)
         return self._series_cache[scheme_code]
 
+    def series(self, scheme_code: str) -> dict[date, float]:
+        """Public accessor for the full NAV history (used by the performance curve)."""
+        try:
+            return self._series(scheme_code)
+        except Exception:  # noqa: BLE001
+            return {}
+
     def nav_on(self, db: Session, instrument: Instrument, on: date) -> float | None:
         if not instrument.scheme_code:
             return None

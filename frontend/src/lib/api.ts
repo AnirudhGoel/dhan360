@@ -124,6 +124,10 @@ export const api = {
     }[];
     count: number; total_invested_out: number; total_in: number;
   }>("/api/transactions"),
+  performance: () => http<{
+    points: { date: string; nav: number; return_pct: number; value: number; invested: number }[];
+    covered_value: number; covered_pct: number; final_return_pct: number; note: string;
+  }>("/api/analytics/performance"),
   mutualFunds: () => http<any>("/api/mutual-funds"),
   stocks: () => http<any>("/api/stocks"),
   concentration: () => http<any>("/api/concentration"),
