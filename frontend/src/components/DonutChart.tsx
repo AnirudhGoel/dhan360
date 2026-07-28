@@ -12,28 +12,36 @@ interface Props {
   centerValue?: string;
 }
 
-// Enlarged active slice on hover (Zerodha-Console style highlight).
-function renderActive(props: any) {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
-  return (
-    <Sector
-      cx={cx}
-      cy={cy}
-      innerRadius={innerRadius}
-      outerRadius={outerRadius + 6}
-      startAngle={startAngle}
-      endAngle={endAngle}
-      fill={fill}
-    />
-  );
-}
-
 export default function DonutChart({ data, onSliceClick, activeLabel, centerLabel, centerValue }: Props) {
   const [hover, setHover] = useState<number | null>(null);
   const filtered = data.filter((d) => d.value > 0);
   const total = filtered.reduce((a, b) => a + b.value, 0);
   const activeIdx = hover ?? (activeLabel ? filtered.findIndex((d) => d.label === activeLabel) : -1);
   const shown = activeIdx >= 0 ? filtered[activeIdx] : null;
+
+  const clickLabel = (label?: string) => {
+    if (label && onSliceClick) onSliceClick(label);
+  };
+
+  // Enlarged active slice on hover (Zerodha-Console style). Rendered as a closure so it carries
+  // the pointer cursor AND the click handler — otherwise the grown slice swallows the click.
+  const renderActive = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, name } = props;
+    const label = payload?.label ?? name;
+    return (
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 6}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        style={{ cursor: onSliceClick ? "pointer" : "default", outline: "none" }}
+        onClick={() => clickLabel(label)}
+      />
+    );
+  };
 
   return (
     <div className="flex items-center gap-4">
@@ -63,7 +71,7 @@ export default function DonutChart({ data, onSliceClick, activeLabel, centerLabe
                   strokeWidth={1}
                   style={{ cursor: onSliceClick ? "pointer" : "default", outline: "none" }}
                   onMouseEnter={() => setHover(i)}
-                  onClick={() => onSliceClick?.(d.label)}
+                  onClick={() => clickLabel(d.label)}
                 />
               ))}
             </Pie>
