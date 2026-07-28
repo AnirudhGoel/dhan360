@@ -7,10 +7,12 @@ can bucket them (e.g. PPF -> Debt/PPF, SGB -> Gold/SGB).
 
 from __future__ import annotations
 
+from datetime import date as date_cls
+
 from pydantic import BaseModel
 
 from app.domain.taxonomy import InstrumentType, Source
-from app.parsers.base import ParsedHolding, ParseResult
+from app.parsers.base import ParsedHolding, ParsedTxn, ParseResult
 
 
 class ManualEntry(BaseModel):
@@ -26,6 +28,9 @@ class ManualEntry(BaseModel):
     sector: str | None = None
     market_cap: str | None = None
     asset_class: str | None = None  # explicit override hint
+    # Optional purchase/deposit date → one dated cashflow so the asset gets an XIRR.
+    # Accurate for lump-sum assets (FD, SGB, bonds); approximate for staggered ones (PPF/EPF/NPS).
+    start_date: date_cls | None = None
     note: str | None = None
 
 
@@ -33,6 +38,10 @@ def parse_entries(entries: list[ManualEntry], file_name: str | None = None) -> P
     result = ParseResult(source=Source.MANUAL, file_name=file_name)
     for e in entries:
         kind = "bank" if e.instrument_type in (InstrumentType.FD, InstrumentType.CASH) else "manual"
+        invested = e.invested_value if e.invested_value is not None else e.current_value
+        txns: list[ParsedTxn] = []
+        if e.start_date and invested:
+            txns.append(ParsedTxn(date=e.start_date, kind="buy", amount=round(-invested, 2)))
         result.holdings.append(
             ParsedHolding(
                 name=e.name,
@@ -41,7 +50,7 @@ def parse_entries(entries: list[ManualEntry], file_name: str | None = None) -> P
                 symbol=(e.symbol or "").upper() or None,
                 quantity=e.quantity,
                 current_value=e.current_value,
-                invested_value=e.invested_value if e.invested_value is not None else e.current_value,
+                invested_value=invested,
                 source=Source.MANUAL,
                 account_name=e.account_name,
                 account_kind=kind,
@@ -49,6 +58,7 @@ def parse_entries(entries: list[ManualEntry], file_name: str | None = None) -> P
                 sector_hint=e.sector,
                 market_cap_hint=e.market_cap,
                 category_hint=e.asset_class,
+                transactions=txns,
                 raw={"note": e.note} if e.note else {},
             )
         )

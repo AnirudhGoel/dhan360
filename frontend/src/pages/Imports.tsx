@@ -235,6 +235,7 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
   const [type, setType] = useState("fd");
   const [currentValue, setCurrentValue] = useState<number | "">("");
   const [investedValue, setInvestedValue] = useState<number | "">("");
+  const [startDate, setStartDate] = useState("");
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
@@ -246,9 +247,10 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
         instrument_type: type,
         current_value: Number(currentValue),
         invested_value: investedValue === "" ? null : Number(investedValue),
+        start_date: startDate || null,
       }]);
       onDone(`Added "${name}".`);
-      setName(""); setCurrentValue(""); setInvestedValue("");
+      setName(""); setCurrentValue(""); setInvestedValue(""); setStartDate("");
     } finally {
       setBusy(false);
     }
@@ -268,10 +270,15 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
           <input type="number" placeholder="Invested ₹" value={investedValue} onChange={(e) => setInvestedValue(e.target.value === "" ? "" : Number(e.target.value))}
             className="text-sm border border-slate-200 rounded-lg px-3 py-2 tabular-nums" />
         </div>
+        <label className="block text-[11px] text-ink-mute">
+          Purchase / start date <span className="text-ink-mute/70">(optional — enables XIRR)</span>
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+            className="mt-1 w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
+        </label>
         <button className="btn-primary w-full" onClick={submit} disabled={busy || !name || currentValue === ""}>
           {busy ? "Adding…" : "Add asset"}
         </button>
-        <p className="text-[11px] text-ink-mute">Type drives classification (e.g. SGB → Gold, PPF → Debt).</p>
+        <p className="text-[11px] text-ink-mute">Type drives classification (e.g. SGB → Gold, PPF → Debt). A start date lets us compute XIRR — accurate for lump-sums like FDs/SGBs, approximate for staggered contributions (PPF/EPF).</p>
       </div>
     </Card>
   );

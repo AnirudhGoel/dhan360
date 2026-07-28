@@ -1,42 +1,42 @@
 {
 "/api/portfolio/summary": {
-"net_worth": 5671650.0,
+"net_worth": 6056650.0,
 "invested": 4826550.0,
-"pnl": 845100.0,
-"pnl_pct": 17.51,
+"pnl": 1230100.0,
+"pnl_pct": 25.49,
 "estimated_value": 862200.0,
-"estimated_pct": 15.2,
+"estimated_pct": 14.24,
 "holdings_count": 35,
 "asset_allocation": [
 {
 "label": "Equity",
 "value": 1538665.0,
-"pct": 26.54
+"pct": 24.89
 },
 {
 "label": "International Equity",
 "value": 231990.0,
-"pct": 4.0
+"pct": 3.75
 },
 {
 "label": "Debt",
-"value": 3265700.0,
-"pct": 56.33
+"value": 3650700.0,
+"pct": 59.05
 },
 {
 "label": "Gold",
 "value": 397000.0,
-"pct": 6.85
+"pct": 6.42
 },
 {
 "label": "Real Estate",
 "value": 120000.0,
-"pct": 2.07
+"pct": 1.94
 },
 {
 "label": "Cash",
 "value": 244300.0,
-"pct": 4.21
+"pct": 3.95
 }
 ],
 "equity_cap_split": [
@@ -64,33 +64,33 @@
 "debt_split": [
 {
 "label": "PPF",
-"value": 1500000.0,
-"pct": 45.93
+"value": 1570000.0,
+"pct": 43.01
 },
 {
 "label": "FD",
-"value": 650000.0,
-"pct": 19.9
+"value": 885000.0,
+"pct": 24.24
 },
 {
 "label": "Corporate Bond",
 "value": 448500.0,
-"pct": 13.73
+"pct": 12.29
 },
 {
 "label": "NPS Debt",
-"value": 300000.0,
-"pct": 9.19
+"value": 380000.0,
+"pct": 10.41
 },
 {
 "label": "Liquid/Overnight",
 "value": 268000.0,
-"pct": 8.21
+"pct": 7.34
 },
 {
 "label": "Unclassified",
 "value": 99200.0,
-"pct": 3.04
+"pct": 2.72
 }
 ],
 "gold_split": [
@@ -150,70 +150,70 @@
 "by_source": [
 {
 "label": "generic_csv",
-"value": 3035000.0,
-"pct": 53.51
+"value": 3420000.0,
+"pct": 56.47
 },
 {
 "label": "cas_json",
 "value": 1383700.0,
-"pct": 24.4
+"pct": 22.85
 },
 {
 "label": "zerodha_holdings",
 "value": 1252950.0,
-"pct": 22.09
+"pct": 20.69
 }
 ],
 "by_account": [
 {
 "label": "Manual Assets",
-"value": 3035000.0,
-"pct": 53.51
+"value": 3420000.0,
+"pct": 56.47
 },
 {
 "label": "Zerodha Demat",
 "value": 1252950.0,
-"pct": 22.09
+"pct": 20.69
 },
 {
 "label": "ICICI Prudential Mutual Fund",
 "value": 428000.0,
-"pct": 7.55
+"pct": 7.07
 },
 {
 "label": "Nippon India Mutual Fund",
 "value": 168000.0,
-"pct": 2.96
+"pct": 2.77
 },
 {
 "label": "Motilal Oswal Mutual Fund",
 "value": 160000.0,
-"pct": 2.82
+"pct": 2.64
 },
 {
 "label": "PPFAS Mutual Fund",
 "value": 159500.0,
-"pct": 2.81
+"pct": 2.63
 },
 {
 "label": "HDFC Mutual Fund",
 "value": 130500.0,
-"pct": 2.3
+"pct": 2.15
 },
 {
 "label": "Axis Mutual Fund",
 "value": 123200.0,
-"pct": 2.17
+"pct": 2.03
 },
 {
 "label": "Mirae Asset Mutual Fund",
 "value": 115500.0,
-"pct": 2.04
+"pct": 1.91
 },
 {
 "label": "SBI Mutual Fund",
 "value": 99000.0,
-"pct": 1.75
+"pct": 1.63
 }
 ]
 },
@@ -259,10 +259,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 70000.0,
+"pnl_pct": 10.76923076923077,
 "asset_class": "Debt",
 "sub_class": "PPF",
 "market_cap": null,
@@ -286,12 +286,39 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 500000.0,
-"current_value": 500000.0,
+"current_value": 675000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 175000.0,
+"pnl_pct": 35.0,
 "asset_class": "Debt",
 "sub_class": "FD",
+"market_cap": null,
+"sector": null,
+"confidence": "high",
+"is_estimated": false,
+"amc": null,
+"plan": null,
+"contribution": null
+},
+{
+"id": 31,
+"instrument_id": 31,
+"name": "NPS Tier-1 (Debt portion)",
+"instrument_type": "nps",
+"symbol": null,
+"isin": null,
+"scheme_code": null,
+"account": "Manual Assets",
+"source": "generic_csv",
+"quantity": 1.0,
+"avg_cost": null,
+"invested_value": 250000.0,
+"current_value": 380000.0,
+"last_price": null,
+"pnl": 130000.0,
+"pnl_pct": 52.0,
+"asset_class": "Debt",
+"sub_class": "NPS Debt",
 "market_cap": null,
 "sector": null,
 "confidence": "high",
@@ -319,33 +346,6 @@
 "pnl_pct": 9.25925925925926,
 "asset_class": "Debt",
 "sub_class": "Corporate Bond",
-"market_cap": null,
-"sector": null,
-"confidence": "high",
-"is_estimated": false,
-"amc": null,
-"plan": null,
-"contribution": null
-},
-{
-"id": 31,
-"instrument_id": 31,
-"name": "NPS Tier-1 (Debt portion)",
-"instrument_type": "nps",
-"symbol": null,
-"isin": null,
-"scheme_code": null,
-"account": "Manual Assets",
-"source": "generic_csv",
-"quantity": 1.0,
-"avg_cost": null,
-"invested_value": 250000.0,
-"current_value": 300000.0,
-"last_price": null,
-"pnl": 50000.0,
-"pnl_pct": 20.0,
-"asset_class": "Debt",
-"sub_class": "NPS Debt",
 "market_cap": null,
 "sector": null,
 "confidence": "high",
@@ -400,6 +400,33 @@
 "pnl_pct": 46.666666666666664,
 "asset_class": "Gold",
 "sub_class": "SGB",
+"market_cap": null,
+"sector": null,
+"confidence": "high",
+"is_estimated": false,
+"amc": null,
+"plan": null,
+"contribution": null
+},
+{
+"id": 30,
+"instrument_id": 30,
+"name": "SBI Tax Saver FD",
+"instrument_type": "fd",
+"symbol": null,
+"isin": null,
+"scheme_code": null,
+"account": "Manual Assets",
+"source": "generic_csv",
+"quantity": 1.0,
+"avg_cost": null,
+"invested_value": 150000.0,
+"current_value": 210000.0,
+"last_price": null,
+"pnl": 60000.0,
+"pnl_pct": 40.0,
+"asset_class": "Debt",
+"sub_class": "FD",
 "market_cap": null,
 "sector": null,
 "confidence": "high",
@@ -514,33 +541,6 @@
 "is_estimated": false,
 "amc": "PPFAS Mutual Fund",
 "plan": "direct",
-"contribution": null
-},
-{
-"id": 30,
-"instrument_id": 30,
-"name": "SBI Tax Saver FD",
-"instrument_type": "fd",
-"symbol": null,
-"isin": null,
-"scheme_code": null,
-"account": "Manual Assets",
-"source": "generic_csv",
-"quantity": 1.0,
-"avg_cost": null,
-"invested_value": 150000.0,
-"current_value": 150000.0,
-"last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
-"asset_class": "Debt",
-"sub_class": "FD",
-"market_cap": null,
-"sector": null,
-"confidence": "high",
-"is_estimated": false,
-"amc": null,
-"plan": null,
 "contribution": null
 },
 {
@@ -1166,7 +1166,7 @@
 }
 ],
 "count": 35,
-"total_value": 5671650.0
+"total_value": 6056650.0
 },
 "/api/mutual-funds": {
 "schemes": [
@@ -1862,7 +1862,7 @@
 "context": null
 }
 ],
-"created_at": "2026-07-22T11:31:27.823131"
+"created_at": "2026-07-28T17:40:40.577501"
 },
 {
 "id": 2,
@@ -1882,7 +1882,7 @@
 "context": null
 }
 ],
-"created_at": "2026-07-22T11:31:27.776709"
+"created_at": "2026-07-28T17:40:40.530452"
 },
 {
 "id": 1,
@@ -1902,7 +1902,7 @@
 "context": null
 }
 ],
-"created_at": "2026-07-22T11:31:27.701686"
+"created_at": "2026-07-28T17:40:40.461328"
 }
 ],
 "/api/taxonomy": {
@@ -2612,10 +2612,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 70000.0,
+"pnl_pct": 10.76923076923077,
 "asset_class": "Debt",
 "sub_class": "PPF",
 "market_cap": null,
@@ -2624,7 +2624,7 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 650000.0
+"contribution": 720000.0
 },
 {
 "id": 29,
@@ -2639,10 +2639,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 500000.0,
-"current_value": 500000.0,
+"current_value": 675000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 175000.0,
+"pnl_pct": 35.0,
 "asset_class": "Debt",
 "sub_class": "FD",
 "market_cap": null,
@@ -2651,7 +2651,34 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 500000.0
+"contribution": 675000.0
+},
+{
+"id": 31,
+"instrument_id": 31,
+"name": "NPS Tier-1 (Debt portion)",
+"instrument_type": "nps",
+"symbol": null,
+"isin": null,
+"scheme_code": null,
+"account": "Manual Assets",
+"source": "generic_csv",
+"quantity": 1.0,
+"avg_cost": null,
+"invested_value": 250000.0,
+"current_value": 380000.0,
+"last_price": null,
+"pnl": 130000.0,
+"pnl_pct": 52.0,
+"asset_class": "Debt",
+"sub_class": "NPS Debt",
+"market_cap": null,
+"sector": null,
+"confidence": "high",
+"is_estimated": false,
+"amc": null,
+"plan": null,
+"contribution": 380000.0
 },
 {
 "id": 15,
@@ -2681,33 +2708,6 @@
 "contribution": 354000.0
 },
 {
-"id": 31,
-"instrument_id": 31,
-"name": "NPS Tier-1 (Debt portion)",
-"instrument_type": "nps",
-"symbol": null,
-"isin": null,
-"scheme_code": null,
-"account": "Manual Assets",
-"source": "generic_csv",
-"quantity": 1.0,
-"avg_cost": null,
-"invested_value": 250000.0,
-"current_value": 300000.0,
-"last_price": null,
-"pnl": 50000.0,
-"pnl_pct": 20.0,
-"asset_class": "Debt",
-"sub_class": "NPS Debt",
-"market_cap": null,
-"sector": null,
-"confidence": "high",
-"is_estimated": false,
-"amc": null,
-"plan": null,
-"contribution": 300000.0
-},
-{
 "id": 23,
 "instrument_id": 23,
 "name": "ICICI Prudential Balanced Advantage Fund - Direct Plan - Growth",
@@ -2735,6 +2735,33 @@
 "contribution": 99200.0
 },
 {
+"id": 30,
+"instrument_id": 30,
+"name": "SBI Tax Saver FD",
+"instrument_type": "fd",
+"symbol": null,
+"isin": null,
+"scheme_code": null,
+"account": "Manual Assets",
+"source": "generic_csv",
+"quantity": 1.0,
+"avg_cost": null,
+"invested_value": 150000.0,
+"current_value": 210000.0,
+"last_price": null,
+"pnl": 60000.0,
+"pnl_pct": 40.0,
+"asset_class": "Debt",
+"sub_class": "FD",
+"market_cap": null,
+"sector": null,
+"confidence": "high",
+"is_estimated": false,
+"amc": null,
+"plan": null,
+"contribution": 210000.0
+},
+{
 "id": 26,
 "instrument_id": 26,
 "name": "Nippon India Liquid Fund - Direct Plan - Growth",
@@ -2760,33 +2787,6 @@
 "amc": "Nippon India Mutual Fund",
 "plan": "direct",
 "contribution": 168000.0
-},
-{
-"id": 30,
-"instrument_id": 30,
-"name": "SBI Tax Saver FD",
-"instrument_type": "fd",
-"symbol": null,
-"isin": null,
-"scheme_code": null,
-"account": "Manual Assets",
-"source": "generic_csv",
-"quantity": 1.0,
-"avg_cost": null,
-"invested_value": 150000.0,
-"current_value": 150000.0,
-"last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
-"asset_class": "Debt",
-"sub_class": "FD",
-"market_cap": null,
-"sector": null,
-"confidence": "high",
-"is_estimated": false,
-"amc": null,
-"plan": null,
-"contribution": 150000.0
 },
 {
 "id": 16,
@@ -2844,7 +2844,7 @@
 }
 ],
 "count": 10,
-"total_value": 3414500.0
+"total_value": 3799500.0
 },
 "/api/holdings?asset_class=Gold": {
 "holdings": [
@@ -4037,10 +4037,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 70000.0,
+"pnl_pct": 10.76923076923077,
 "asset_class": "Debt",
 "sub_class": "PPF",
 "market_cap": null,
@@ -4049,11 +4049,11 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 650000.0
+"contribution": 720000.0
 }
 ],
 "count": 2,
-"total_value": 1500000.0
+"total_value": 1570000.0
 },
 "/api/holdings?sub_class=FD": {
 "holdings": [
@@ -4070,10 +4070,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 500000.0,
-"current_value": 500000.0,
+"current_value": 675000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 175000.0,
+"pnl_pct": 35.0,
 "asset_class": "Debt",
 "sub_class": "FD",
 "market_cap": null,
@@ -4082,7 +4082,7 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 500000.0
+"contribution": 675000.0
 },
 {
 "id": 30,
@@ -4097,10 +4097,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 150000.0,
-"current_value": 150000.0,
+"current_value": 210000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 60000.0,
+"pnl_pct": 40.0,
 "asset_class": "Debt",
 "sub_class": "FD",
 "market_cap": null,
@@ -4109,11 +4109,11 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 150000.0
+"contribution": 210000.0
 }
 ],
 "count": 2,
-"total_value": 650000.0
+"total_value": 885000.0
 },
 "/api/holdings?sub_class=Corporate Bond": {
 "holdings": [
@@ -4190,10 +4190,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 250000.0,
-"current_value": 300000.0,
+"current_value": 380000.0,
 "last_price": null,
-"pnl": 50000.0,
-"pnl_pct": 20.0,
+"pnl": 130000.0,
+"pnl_pct": 52.0,
 "asset_class": "Debt",
 "sub_class": "NPS Debt",
 "market_cap": null,
@@ -4202,11 +4202,11 @@
 "is_estimated": false,
 "amc": null,
 "plan": null,
-"contribution": 300000.0
+"contribution": 380000.0
 }
 ],
 "count": 1,
-"total_value": 300000.0
+"total_value": 380000.0
 },
 "/api/holdings?sub_class=Liquid/Overnight": {
 "holdings": [
@@ -4942,10 +4942,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 70000.0,
+"pnl_pct": 10.76923076923077,
 "asset_class": "Debt",
 "sub_class": "PPF",
 "market_cap": null,
@@ -4969,10 +4969,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 500000.0,
-"current_value": 500000.0,
+"current_value": 675000.0,
 "last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
+"pnl": 175000.0,
+"pnl_pct": 35.0,
 "asset_class": "Debt",
 "sub_class": "FD",
 "market_cap": null,
@@ -4996,10 +4996,10 @@
 "quantity": 1.0,
 "avg_cost": null,
 "invested_value": 250000.0,
-"current_value": 300000.0,
+"current_value": 380000.0,
 "last_price": null,
-"pnl": 50000.0,
-"pnl_pct": 20.0,
+"pnl": 130000.0,
+"pnl_pct": 52.0,
 "asset_class": "Debt",
 "sub_class": "NPS Debt",
 "market_cap": null,
@@ -5038,6 +5038,33 @@
 "contribution": null
 },
 {
+"id": 30,
+"instrument_id": 30,
+"name": "SBI Tax Saver FD",
+"instrument_type": "fd",
+"symbol": null,
+"isin": null,
+"scheme_code": null,
+"account": "Manual Assets",
+"source": "generic_csv",
+"quantity": 1.0,
+"avg_cost": null,
+"invested_value": 150000.0,
+"current_value": 210000.0,
+"last_price": null,
+"pnl": 60000.0,
+"pnl_pct": 40.0,
+"asset_class": "Debt",
+"sub_class": "FD",
+"market_cap": null,
+"sector": null,
+"confidence": "high",
+"is_estimated": false,
+"amc": null,
+"plan": null,
+"contribution": null
+},
+{
 "id": 35,
 "instrument_id": 35,
 "name": "Savings Account Buffer",
@@ -5056,33 +5083,6 @@
 "pnl_pct": 0.0,
 "asset_class": "Cash",
 "sub_class": "Cash",
-"market_cap": null,
-"sector": null,
-"confidence": "high",
-"is_estimated": false,
-"amc": null,
-"plan": null,
-"contribution": null
-},
-{
-"id": 30,
-"instrument_id": 30,
-"name": "SBI Tax Saver FD",
-"instrument_type": "fd",
-"symbol": null,
-"isin": null,
-"scheme_code": null,
-"account": "Manual Assets",
-"source": "generic_csv",
-"quantity": 1.0,
-"avg_cost": null,
-"invested_value": 150000.0,
-"current_value": 150000.0,
-"last_price": null,
-"pnl": 0.0,
-"pnl_pct": 0.0,
-"asset_class": "Debt",
-"sub_class": "FD",
 "market_cap": null,
 "sector": null,
 "confidence": "high",
@@ -5147,7 +5147,7 @@
 }
 ],
 "count": 9,
-"total_value": 3035000.0
+"total_value": 3420000.0
 },
 "/api/holdings?account=Zerodha Demat": {
 "holdings": [
@@ -5908,46 +5908,46 @@
 "/api/rebalance?mode=rebalance&new_money=0": {
 "mode": "rebalance",
 "new_money": 0.0,
-"net_worth": 5671650.0,
+"net_worth": 6056650.0,
 "has_targets": true,
 "targets_sum": 100.0,
 "lines": [
 {
 "bucket": "Equity",
 "current_value": 1538665.0,
-"current_pct": 26.54,
+"current_pct": 24.89,
 "target_pct": 45.0,
-"target_value": 2552242.5,
-"drift_pct": -18.46,
-"drift_value": -1013577.5,
+"target_value": 2725492.5,
+"drift_pct": -20.11,
+"drift_value": -1186827.5,
 "action": "buy",
-"amount": 1013577.5,
+"amount": 1186827.5,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "International Equity",
 "current_value": 231990.0,
-"current_pct": 4.0,
+"current_pct": 3.75,
 "target_pct": 10.0,
-"target_value": 567165.0,
-"drift_pct": -6.0,
-"drift_value": -335175.0,
+"target_value": 605665.0,
+"drift_pct": -6.25,
+"drift_value": -373675.0,
 "action": "buy",
-"amount": 335175.0,
+"amount": 373675.0,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Debt",
-"current_value": 3265700.0,
-"current_pct": 56.33,
+"current_value": 3650700.0,
+"current_pct": 59.05,
 "target_pct": 25.0,
-"target_value": 1417912.5,
-"drift_pct": 31.33,
-"drift_value": 1847787.5,
+"target_value": 1514162.5,
+"drift_pct": 34.05,
+"drift_value": 2136537.5,
 "action": "sell",
-"amount": 1847787.5,
+"amount": 2136537.5,
 "status": "overweight",
 "warnings": [
 "Debt fund gains are taxed at your slab rate (post-Apr-2023 units). Check exit load on short-duration/credit funds."
@@ -5956,39 +5956,39 @@
 {
 "bucket": "Gold",
 "current_value": 397000.0,
-"current_pct": 6.85,
+"current_pct": 6.42,
 "target_pct": 10.0,
-"target_value": 567165.0,
-"drift_pct": -3.15,
-"drift_value": -170165.0,
+"target_value": 605665.0,
+"drift_pct": -3.58,
+"drift_value": -208665.0,
 "action": "buy",
-"amount": 170165.0,
+"amount": 208665.0,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Real Estate",
 "current_value": 120000.0,
-"current_pct": 2.07,
+"current_pct": 1.94,
 "target_pct": 5.0,
-"target_value": 283582.5,
-"drift_pct": -2.93,
-"drift_value": -163582.5,
+"target_value": 302832.5,
+"drift_pct": -3.06,
+"drift_value": -182832.5,
 "action": "buy",
-"amount": 163582.5,
+"amount": 182832.5,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Cash",
 "current_value": 244300.0,
-"current_pct": 4.21,
+"current_pct": 3.95,
 "target_pct": 5.0,
-"target_value": 283582.5,
-"drift_pct": -0.79,
-"drift_value": -39282.5,
+"target_value": 302832.5,
+"drift_pct": -1.05,
+"drift_value": -58532.5,
 "action": "buy",
-"amount": 39282.5,
+"amount": 58532.5,
 "status": "underweight",
 "warnings": []
 }
@@ -5998,44 +5998,44 @@
 "/api/rebalance?mode=new_money&new_money=100000": {
 "mode": "new_money",
 "new_money": 100000.0,
-"net_worth": 5671650.0,
+"net_worth": 6056650.0,
 "has_targets": true,
 "targets_sum": 100.0,
 "lines": [
 {
 "bucket": "Equity",
 "current_value": 1538665.0,
-"current_pct": 26.54,
+"current_pct": 24.89,
 "target_pct": 45.0,
-"target_value": 2597242.5,
-"drift_pct": -18.46,
-"drift_value": -1058577.5,
+"target_value": 2770492.5,
+"drift_pct": -20.11,
+"drift_value": -1231827.5,
 "action": "buy",
-"amount": 58915.17,
+"amount": 59065.37,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "International Equity",
 "current_value": 231990.0,
-"current_pct": 4.0,
+"current_pct": 3.75,
 "target_pct": 10.0,
-"target_value": 577165.0,
-"drift_pct": -6.0,
-"drift_value": -345175.0,
+"target_value": 615665.0,
+"drift_pct": -6.25,
+"drift_value": -383675.0,
 "action": "buy",
-"amount": 19210.73,
+"amount": 18396.98,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Debt",
-"current_value": 3265700.0,
-"current_pct": 56.33,
+"current_value": 3650700.0,
+"current_pct": 59.05,
 "target_pct": 25.0,
-"target_value": 1442912.5,
-"drift_pct": 31.33,
-"drift_value": 1822787.5,
+"target_value": 1539162.5,
+"drift_pct": 34.05,
+"drift_value": 2111537.5,
 "action": "hold",
 "amount": 0.0,
 "status": "overweight",
@@ -6044,39 +6044,39 @@
 {
 "bucket": "Gold",
 "current_value": 397000.0,
-"current_pct": 6.85,
+"current_pct": 6.42,
 "target_pct": 10.0,
-"target_value": 577165.0,
-"drift_pct": -3.15,
-"drift_value": -180165.0,
+"target_value": 615665.0,
+"drift_pct": -3.58,
+"drift_value": -218665.0,
 "action": "buy",
-"amount": 10027.09,
+"amount": 10484.85,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Real Estate",
 "current_value": 120000.0,
-"current_pct": 2.07,
+"current_pct": 1.94,
 "target_pct": 5.0,
-"target_value": 288582.5,
-"drift_pct": -2.93,
-"drift_value": -168582.5,
+"target_value": 307832.5,
+"drift_pct": -3.06,
+"drift_value": -187832.5,
 "action": "buy",
-"amount": 9382.47,
+"amount": 9006.45,
 "status": "underweight",
 "warnings": []
 },
 {
 "bucket": "Cash",
 "current_value": 244300.0,
-"current_pct": 4.21,
+"current_pct": 3.95,
 "target_pct": 5.0,
-"target_value": 288582.5,
-"drift_pct": -0.79,
-"drift_value": -44282.5,
+"target_value": 307832.5,
+"drift_pct": -1.05,
+"drift_value": -63532.5,
 "action": "buy",
-"amount": 2464.54,
+"amount": 3046.34,
 "status": "underweight",
 "warnings": []
 }
@@ -6091,15 +6091,15 @@
 "results": [
 {
 "label": "Whole portfolio",
-"xirr": 5.74,
+"xirr": 6.05,
 "start_value": 0.0,
-"end_value": 5671650.0,
+"end_value": 6056650.0,
 "invested": 4826550.0,
-"current_value": 5671650.0,
-"covered_value": 1383700.0,
-"coverage_pct": 24.4,
+"current_value": 6056650.0,
+"covered_value": 4286650.0,
+"coverage_pct": 70.8,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": true,
 "split_flagged": false,
 "insufficient_data": false
@@ -6120,9 +6120,9 @@
 "start_value": 14097357.52,
 "end_value": 14792788.9,
 "invested": 4826550.0,
-"current_value": 5671650.0,
+"current_value": 6056650.0,
 "covered_value": 1215700.0,
-"coverage_pct": 21.4,
+"coverage_pct": 20.1,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": true,
@@ -6141,15 +6141,15 @@
 "results": [
 {
 "label": "Debt",
-"xirr": 2.73,
+"xirr": 5.67,
 "start_value": 0.0,
-"end_value": 3166500.0,
+"end_value": 3551500.0,
 "invested": 2914000.0,
-"current_value": 3166500.0,
-"covered_value": 262500.0,
-"coverage_pct": 8.3,
+"current_value": 3551500.0,
+"covered_value": 1981500.0,
+"coverage_pct": 55.8,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": true,
 "split_flagged": false,
 "insufficient_data": false
@@ -6157,32 +6157,32 @@
 },
 {
 "label": "Equity",
-"xirr": 5.88,
+"xirr": 6.3,
 "start_value": 0.0,
 "end_value": 1591250.0,
 "invested": 1191350.0,
 "current_value": 1591250.0,
-"covered_value": 862200.0,
-"coverage_pct": 54.2,
+"covered_value": 1591250.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
-"has_estimated_price": true,
+"price_return_only": true,
+"has_estimated_price": false,
 "split_flagged": false,
 "insufficient_data": false
 }
 },
 {
 "label": "Gold",
-"xirr": 4.36,
+"xirr": 5.74,
 "start_value": 0.0,
 "end_value": 397000.0,
 "invested": 296000.0,
 "current_value": 397000.0,
-"covered_value": 99000.0,
-"coverage_pct": 24.9,
+"covered_value": 397000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
-"has_estimated_price": true,
+"price_return_only": true,
+"has_estimated_price": false,
 "split_flagged": false,
 "insufficient_data": false
 }
@@ -6205,34 +6205,34 @@
 },
 {
 "label": "International Equity",
-"xirr": 9.7,
+"xirr": 9.92,
 "start_value": 0.0,
 "end_value": 196900.0,
 "invested": 125200.0,
 "current_value": 196900.0,
-"covered_value": 160000.0,
-"coverage_pct": 81.3,
+"covered_value": 196900.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
-"has_estimated_price": true,
+"price_return_only": true,
+"has_estimated_price": false,
 "split_flagged": false,
 "insufficient_data": false
 }
 },
 {
 "label": "Real Estate",
-"xirr": null,
+"xirr": 3.92,
 "start_value": 0.0,
 "end_value": 120000.0,
 "invested": 100000.0,
 "current_value": 120000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 120000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
-"has_estimated_price": true,
+"has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 }
 ],
@@ -6250,9 +6250,9 @@
 "start_value": 188142.5,
 "end_value": 203479.5,
 "invested": 2914000.0,
-"current_value": 3166500.0,
+"current_value": 3551500.0,
 "covered_value": 94500.0,
-"coverage_pct": 3.0,
+"coverage_pct": 2.7,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": true,
@@ -6369,9 +6369,9 @@
 "label": "EPF Account",
 "xirr": null,
 "start_value": 0.0,
-"end_value": 650000.0,
+"end_value": 720000.0,
 "invested": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "covered_value": 0.0,
 "coverage_pct": 0.0,
 "flags": {
@@ -6383,50 +6383,50 @@
 },
 {
 "label": "HDFC Bank FD (5yr)",
-"xirr": null,
+"xirr": 6.84,
 "start_value": 0.0,
-"end_value": 500000.0,
+"end_value": 675000.0,
 "invested": 500000.0,
-"current_value": 500000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"current_value": 675000.0,
+"covered_value": 675000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
-}
-},
-{
-"label": "EBBETF0433",
-"xirr": null,
-"start_value": 0.0,
-"end_value": 354000.0,
-"invested": 324000.0,
-"current_value": 354000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
-"flags": {
-"price_return_only": false,
-"has_estimated_price": false,
-"split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "NPS Tier-1 (Debt portion)",
-"xirr": null,
+"xirr": 8.45,
 "start_value": 0.0,
-"end_value": 300000.0,
+"end_value": 380000.0,
 "invested": 250000.0,
-"current_value": 300000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"current_value": 380000.0,
+"covered_value": 380000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
+}
+},
+{
+"label": "EBBETF0433",
+"xirr": 2.84,
+"start_value": 0.0,
+"end_value": 354000.0,
+"invested": 324000.0,
+"current_value": 354000.0,
+"covered_value": 354000.0,
+"coverage_pct": 100.0,
+"flags": {
+"price_return_only": true,
+"has_estimated_price": false,
+"split_flagged": false,
+"insufficient_data": false
 }
 },
 {
@@ -6447,18 +6447,34 @@
 },
 {
 "label": "SGB 2030 Series IV",
-"xirr": null,
+"xirr": 6.6,
 "start_value": 0.0,
 "end_value": 220000.0,
 "invested": 150000.0,
 "current_value": 220000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 220000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
+}
+},
+{
+"label": "SBI Tax Saver FD",
+"xirr": 6.55,
+"start_value": 0.0,
+"end_value": 210000.0,
+"invested": 150000.0,
+"current_value": 210000.0,
+"covered_value": 210000.0,
+"coverage_pct": 100.0,
+"flags": {
+"price_return_only": false,
+"has_estimated_price": false,
+"split_flagged": false,
+"insufficient_data": false
 }
 },
 {
@@ -6526,22 +6542,6 @@
 }
 },
 {
-"label": "SBI Tax Saver FD",
-"xirr": null,
-"start_value": 0.0,
-"end_value": 150000.0,
-"invested": 150000.0,
-"current_value": 150000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
-"flags": {
-"price_return_only": false,
-"has_estimated_price": false,
-"split_flagged": false,
-"insufficient_data": true
-}
-},
-{
 "label": "HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth",
 "xirr": 6.32,
 "start_value": 0.0,
@@ -6575,34 +6575,34 @@
 },
 {
 "label": "Embassy Office Parks REIT",
-"xirr": null,
+"xirr": 3.92,
 "start_value": 0.0,
 "end_value": 120000.0,
 "invested": 100000.0,
 "current_value": 120000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 120000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "RELIANCE",
-"xirr": null,
+"xirr": 4.79,
 "start_value": 0.0,
 "end_value": 119200.0,
 "invested": 94000.0,
 "current_value": 119200.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 119200.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
@@ -6623,18 +6623,18 @@
 },
 {
 "label": "LIQUIDBEES",
-"xirr": null,
+"xirr": -0.0,
 "start_value": 0.0,
 "end_value": 100000.0,
 "invested": 100000.0,
 "current_value": 100000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 100000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
@@ -6671,18 +6671,18 @@
 },
 {
 "label": "HDFCBANK",
-"xirr": null,
+"xirr": 3.91,
 "start_value": 0.0,
 "end_value": 86000.0,
 "invested": 72500.0,
 "current_value": 86000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 86000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
@@ -6703,210 +6703,210 @@
 },
 {
 "label": "INFY",
-"xirr": null,
+"xirr": 8.85,
 "start_value": 0.0,
 "end_value": 65800.0,
 "invested": 47250.0,
 "current_value": 65800.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 65800.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "TATAPOWER",
-"xirr": null,
+"xirr": 16.86,
 "start_value": 0.0,
 "end_value": 63000.0,
 "invested": 31500.0,
 "current_value": 63000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 63000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "COFORGE",
-"xirr": null,
+"xirr": 10.94,
 "start_value": 0.0,
 "end_value": 63000.0,
 "invested": 42000.0,
 "current_value": 63000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 63000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "TCS",
-"xirr": null,
+"xirr": 6.67,
 "start_value": 0.0,
 "end_value": 62250.0,
 "invested": 49500.0,
 "current_value": 62250.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 62250.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "BAJFINANCE",
-"xirr": null,
+"xirr": 2.04,
 "start_value": 0.0,
 "end_value": 57600.0,
 "invested": 52000.0,
 "current_value": 57600.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 57600.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "ITC",
-"xirr": null,
+"xirr": 7.32,
 "start_value": 0.0,
 "end_value": 57000.0,
 "invested": 45600.0,
 "current_value": 57000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 57000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "NIFTYBEES",
-"xirr": null,
+"xirr": 7.15,
 "start_value": 0.0,
 "end_value": 55000.0,
 "invested": 42000.0,
 "current_value": 55000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 55000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "KPITTECH",
-"xirr": null,
+"xirr": 17.55,
 "start_value": 0.0,
 "end_value": 45000.0,
 "invested": 27000.0,
 "current_value": 45000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 45000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "Digital Gold (MMTC-PAMP)",
-"xirr": null,
+"xirr": 3.51,
 "start_value": 0.0,
 "end_value": 45000.0,
 "invested": 40000.0,
 "current_value": 45000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 45000.0,
+"coverage_pct": 100.0,
 "flags": {
 "price_return_only": false,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "IRCTC",
-"xirr": null,
+"xirr": 10.62,
 "start_value": 0.0,
 "end_value": 37200.0,
 "invested": 26000.0,
 "current_value": 37200.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 37200.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "MON100",
-"xirr": null,
+"xirr": 11.35,
 "start_value": 0.0,
 "end_value": 36900.0,
 "invested": 25200.0,
 "current_value": 36900.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 36900.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "GOLDBEES",
-"xirr": null,
+"xirr": 5.5,
 "start_value": 0.0,
 "end_value": 33000.0,
 "invested": 26000.0,
 "current_value": 33000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 33000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 },
 {
 "label": "TANLA",
-"xirr": null,
+"xirr": -2.05,
 "start_value": 0.0,
 "end_value": 18000.0,
 "invested": 20000.0,
 "current_value": 18000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
+"covered_value": 18000.0,
+"coverage_pct": 100.0,
 "flags": {
-"price_return_only": false,
+"price_return_only": true,
 "has_estimated_price": false,
 "split_flagged": false,
-"insufficient_data": true
+"insufficient_data": false
 }
 }
 ],
@@ -6940,7 +6940,7 @@
 "start_value": 0.0,
 "end_value": 0.0,
 "invested": 650000.0,
-"current_value": 650000.0,
+"current_value": 720000.0,
 "covered_value": 0.0,
 "coverage_pct": 0.0,
 "flags": {
@@ -6956,7 +6956,23 @@
 "start_value": 0.0,
 "end_value": 0.0,
 "invested": 500000.0,
-"current_value": 500000.0,
+"current_value": 675000.0,
+"covered_value": 0.0,
+"coverage_pct": 0.0,
+"flags": {
+"price_return_only": false,
+"has_estimated_price": true,
+"split_flagged": false,
+"insufficient_data": true
+}
+},
+{
+"label": "NPS Tier-1 (Debt portion)",
+"xirr": null,
+"start_value": 0.0,
+"end_value": 0.0,
+"invested": 250000.0,
+"current_value": 380000.0,
 "covered_value": 0.0,
 "coverage_pct": 0.0,
 "flags": {
@@ -6973,22 +6989,6 @@
 "end_value": 0.0,
 "invested": 324000.0,
 "current_value": 354000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
-"flags": {
-"price_return_only": false,
-"has_estimated_price": true,
-"split_flagged": false,
-"insufficient_data": true
-}
-},
-{
-"label": "NPS Tier-1 (Debt portion)",
-"xirr": null,
-"start_value": 0.0,
-"end_value": 0.0,
-"invested": 250000.0,
-"current_value": 300000.0,
 "covered_value": 0.0,
 "coverage_pct": 0.0,
 "flags": {
@@ -7021,6 +7021,22 @@
 "end_value": 0.0,
 "invested": 150000.0,
 "current_value": 220000.0,
+"covered_value": 0.0,
+"coverage_pct": 0.0,
+"flags": {
+"price_return_only": false,
+"has_estimated_price": true,
+"split_flagged": false,
+"insufficient_data": true
+}
+},
+{
+"label": "SBI Tax Saver FD",
+"xirr": null,
+"start_value": 0.0,
+"end_value": 0.0,
+"invested": 150000.0,
+"current_value": 210000.0,
 "covered_value": 0.0,
 "coverage_pct": 0.0,
 "flags": {
@@ -7092,22 +7108,6 @@
 "has_estimated_price": false,
 "split_flagged": false,
 "insufficient_data": false
-}
-},
-{
-"label": "SBI Tax Saver FD",
-"xirr": null,
-"start_value": 0.0,
-"end_value": 0.0,
-"invested": 150000.0,
-"current_value": 150000.0,
-"covered_value": 0.0,
-"coverage_pct": 0.0,
-"flags": {
-"price_return_only": false,
-"has_estimated_price": true,
-"split_flagged": false,
-"insufficient_data": true
 }
 },
 {

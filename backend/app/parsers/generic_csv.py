@@ -2,9 +2,12 @@
 
 Documented columns (header row, case-insensitive; extra columns ignored):
     name, type, isin, symbol, scheme_code, quantity, avg_cost,
-    invested_value, current_value, amc, plan, folio, sector, market_cap, asset_class
+    invested_value, current_value, amc, plan, folio, sector, market_cap, asset_class,
+    start_date
 
-Only ``name`` and one of (``current_value`` or ``quantity``) are strictly required.
+Only ``name`` and one of (``current_value`` or ``quantity``) are strictly required. An optional
+``start_date`` (with ``invested_value``) records a single dated cashflow so the asset gets an XIRR
+— useful for FDs, SGBs, bonds and other lump-sum assets that don't come with a transaction file.
 ``type`` should be one of the InstrumentType values (stock, etf, mutual_fund, sgb, bond,
 gsec, fd, ppf, nps, reit, invit, cash, digital_gold, real_estate, other); defaults to
 ``other``. ``asset_class`` is an optional explicit override applied during classification.
@@ -13,7 +16,8 @@ gsec, fd, ppf, nps, reit, invit, cash, digital_gold, real_estate, other); defaul
 from __future__ import annotations
 
 from app.domain.taxonomy import InstrumentType, Source
-from app.parsers.base import ParsedHolding, ParseResult
+from app.parsers.base import ParsedHolding, ParsedTxn, ParseResult
+from app.parsers.cas_json import _parse_date
 from app.parsers.csv_utils import find_col, sniff_rows, to_float
 
 _VALID_TYPES = {t.value for t in InstrumentType}
@@ -43,6 +47,7 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Impor
         "sector": find_col(h, "sector"),
         "market_cap": find_col(h, "marketcap", "cap"),
         "asset_class": find_col(h, "assetclass", "class"),
+        "start_date": find_col(h, "startdate", "purchasedate", "investmentdate", "date"),
     }
     if not cols["name"]:
         result.error("Generic CSV needs a 'name' column.")
@@ -61,6 +66,14 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Impor
             result.warn(f"Skipped {name}: no quantity or current value.", context=name)
             continue
 
+        invested = to_float(row.get(cols["invested_value"])) if cols["invested_value"] else None
+
+        # Optional single dated cashflow → enables XIRR for lump-sum manual assets.
+        txns: list[ParsedTxn] = []
+        start = _parse_date(row.get(cols["start_date"])) if cols["start_date"] else None
+        if start and invested:
+            txns.append(ParsedTxn(date=start, kind="buy", amount=round(-invested, 2)))
+
         result.holdings.append(
             ParsedHolding(
                 name=name,
@@ -70,7 +83,7 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Impor
                 scheme_code=(row.get(cols["scheme_code"]) or "").strip() or None if cols["scheme_code"] else None,
                 quantity=qty or 1.0,
                 avg_cost=to_float(row.get(cols["avg_cost"])) if cols["avg_cost"] else None,
-                invested_value=to_float(row.get(cols["invested_value"])) if cols["invested_value"] else None,
+                invested_value=invested,
                 current_value=curval,
                 amc=(row.get(cols["amc"]) or "").strip() or None if cols["amc"] else None,
                 plan=(row.get(cols["plan"]) or "").strip().lower() or None if cols["plan"] else None,
@@ -81,6 +94,7 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Impor
                 sector_hint=(row.get(cols["sector"]) or "").strip() or None if cols["sector"] else None,
                 market_cap_hint=(row.get(cols["market_cap"]) or "").strip() or None if cols["market_cap"] else None,
                 category_hint=(row.get(cols["asset_class"]) or "").strip() or None if cols["asset_class"] else None,
+                transactions=txns,
                 raw=row,
             )
         )

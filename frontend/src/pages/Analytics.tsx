@@ -44,7 +44,7 @@ const FLAG_LABELS: Record<string, string> = {
   price_return_only: "price-return (excl. dividends)",
   has_estimated_price: "partial coverage",
   split_flagged: "split in window",
-  insufficient_data: "no cost-basis data",
+  insufficient_data: "snapshot — no dated transactions",
 };
 
 export default function Analytics() {

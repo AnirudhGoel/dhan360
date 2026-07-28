@@ -8,12 +8,13 @@ demonstrate look-through concentration and direct-vs-fund overlap, and sets a de
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 from sqlalchemy import select
 
 from app.db.database import session_scope
-from app.db.models import Instrument, Lookthrough, TargetAllocation
+from app.db.models import Holding, Instrument, Lookthrough, TargetAllocation, Transaction
 from app.parsers import cas_json, generic_csv, zerodha_holdings
 from app.services.classification_service import reclassify_all
 from app.services.import_service import process_parse_result
@@ -81,6 +82,29 @@ def seed() -> None:
                 ))
             db.flush()
             print(f"  Added {len(PPFAS_DISCLOSED)} disclosed holdings for {ppfas.name}.")
+
+        # The Zerodha holdings CSV is a snapshot with no transaction history, so direct
+        # stocks/ETFs would have no XIRR. Inject a dated buy for each (as a tradebook would
+        # provide) so lifetime XIRR is demonstrable. Dates are staggered for realism.
+        buy_dates = [date(2021, 7, 1), date(2022, 2, 15), date(2022, 9, 1),
+                     date(2023, 1, 10), date(2023, 6, 1)]
+        stock_holdings = db.execute(
+            select(Holding, Instrument)
+            .join(Instrument, Holding.instrument_id == Instrument.id)
+            .where(Instrument.instrument_type.in_(("stock", "etf")))
+        ).all()
+        injected = 0
+        for i, (h, inst) in enumerate(stock_holdings):
+            if h.invested_value:
+                db.add(Transaction(
+                    instrument_id=inst.id, account_id=h.account_id,
+                    date=buy_dates[i % len(buy_dates)], kind="buy",
+                    units=h.quantity, amount=round(-h.invested_value, 2),
+                    price=h.avg_cost, source="zerodha_tradebook",
+                ))
+                injected += 1
+        db.flush()
+        print(f"  Injected {injected} direct-equity buy transactions (for XIRR).")
 
         # Default target allocation.
         for bucket, pct in DEFAULT_TARGETS.items():
