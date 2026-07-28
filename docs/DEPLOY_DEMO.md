@@ -7,7 +7,9 @@ bundled sample portfolio. No server, no database, no user data — so it's safe 
 - `frontend` — `npm run build:demo` produces `frontend/dist/` (static site + `404.html` SPA fallback).
 - `.github/workflows/deploy-demo.yml` — builds the demo and publishes to GitHub Pages on every
   push to `main` that touches `frontend/**`.
-- `frontend/public/CNAME` — set to `dhan360.in` (Pages custom domain).
+- The demo uses **relative asset paths (`--base=./`) + hash routing**, so it works unchanged at a
+  project-site subpath (`anirudhgoel.github.io/dhan360/`) *or* at an apex custom domain — no rebuild
+  needed when you switch. (No `CNAME` is committed yet — add the domain when DNS is ready, below.)
 
 ## One-time steps (yours — needs your accounts)
 
@@ -24,16 +26,20 @@ bundled sample portfolio. No server, no database, no user data — so it's safe 
    Source = **GitHub Actions**. The workflow will run and publish on the next push (or trigger it
    manually from the Actions tab → "Deploy demo to GitHub Pages" → Run workflow).
 
-3. **Point the domain:** at your DNS provider for `dhan360.in`, add the GitHub Pages records:
+   After this, the demo is live at **`https://anirudhgoel.github.io/dhan360/`** — verify it there first.
+
+3. **Point the domain (when ready):** at your DNS provider for `dhan360.in`, add the GitHub Pages records:
    - Apex `dhan360.in` → four `A` records: `185.199.108.153`, `185.199.109.153`,
      `185.199.110.153`, `185.199.111.153` (and/or the `AAAA` IPv6 equivalents).
    - `www` → `CNAME` to `AnirudhGoel.github.io`.
-   Then repo → Settings → Pages → Custom domain = `dhan360.in`, and tick **Enforce HTTPS** once
-   the certificate is issued.
+   Then repo → Settings → Pages → **Custom domain = `dhan360.in`** (GitHub writes the CNAME for you),
+   and tick **Enforce HTTPS** once the certificate is issued. No rebuild needed — the relative-path +
+   hash-routing build already works at the apex.
 
 ## Notes
-- The build uses `--base=/` because it serves from the apex domain. If you want to preview on the
-  raw `*.github.io/dhan360/` URL first, temporarily build with `--base=/dhan360/`.
+- The demo build uses `--base=./` + hash routing, so the same artifact serves from a project-site
+  subpath or an apex domain. URLs look like `…/dhan360/#/analytics` (hash routes) — expected and fine
+  for a static demo.
 - To refresh the demo's sample data after changing the seed: re-run
   `cd backend && DHAN360_DATA_DIR=./data python -m scripts.seed && python -m scripts.capture_demo`,
   which regenerates `frontend/src/demo/fixtures.json` (committed, so CI can build without a backend).
