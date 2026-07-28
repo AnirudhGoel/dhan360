@@ -14,6 +14,7 @@ from app.portfolio.analysis import (
     stock_etf_analysis,
 )
 from app.portfolio.holdings_view import holdings_payload
+from app.portfolio.transactions_view import transactions_payload
 
 router = APIRouter(prefix="/api", tags=["portfolio"])
 
@@ -21,6 +22,11 @@ router = APIRouter(prefix="/api", tags=["portfolio"])
 @router.get("/portfolio/summary")
 def get_summary(db: Session = Depends(get_session)) -> dict:
     return summary(db)
+
+
+@router.get("/transactions")
+def get_transactions(db: Session = Depends(get_session)) -> dict:
+    return transactions_payload(db)
 
 
 @router.get("/holdings")

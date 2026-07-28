@@ -9,6 +9,7 @@ const NAV = [
   { to: "/stocks-etfs", label: "Stocks & ETFs", icon: "↗" },
   { to: "/rebalancing", label: "Rebalancing", icon: "⇄" },
   { to: "/analytics", label: "Analytics (XIRR)", icon: "∿" },
+  { to: "/transactions", label: "Transactions", icon: "⇅" },
   { to: "/reports", label: "Reports", icon: "🖶" },
   { to: "/imports", label: "Data & Imports", icon: "⤓" },
   { to: "/settings", label: "Settings", icon: "⚙" },

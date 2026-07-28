@@ -115,6 +115,15 @@ export const api = {
       }[];
     }>(`/api/analytics/xirr?${q.toString()}`);
   },
+  transactions: () => http<{
+    transactions: {
+      id: number; date: string; instrument: string; symbol: string | null;
+      instrument_type: string; asset_class: string; kind: string;
+      units: number | null; amount: number; direction: string;
+      price: number | null; account: string | null; source: string;
+    }[];
+    count: number; total_invested_out: number; total_in: number;
+  }>("/api/transactions"),
   mutualFunds: () => http<any>("/api/mutual-funds"),
   stocks: () => http<any>("/api/stocks"),
   concentration: () => http<any>("/api/concentration"),

@@ -40,6 +40,7 @@ def main() -> None:
     # Core read endpoints
     summary = cap("/api/portfolio/summary")
     cap("/api/holdings")  # unfiltered
+    cap("/api/transactions")
     cap("/api/mutual-funds")
     cap("/api/stocks")
     cap("/api/concentration")
