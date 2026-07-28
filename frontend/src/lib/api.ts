@@ -62,7 +62,14 @@ export interface RebalanceLine {
   warnings: string[];
 }
 
+import { DEMO, demoGet, DemoReadOnlyError } from "./demo";
+
 async function http<T>(url: string, opts?: RequestInit): Promise<T> {
+  if (DEMO) {
+    const method = (opts?.method ?? "GET").toUpperCase();
+    if (method === "GET") return demoGet<T>(url);
+    return Promise.resolve({ demo: true } as T); // mutations are no-ops in the demo
+  }
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
     ...opts,
@@ -125,11 +132,13 @@ export const api = {
   getTargets: () => http<{ targets: { bucket: string; target_pct: number }[]; sum: number }>("/api/targets"),
   setTargets: (targets: { bucket: string; target_pct: number }[]) =>
     http("/api/targets", { method: "PUT", body: JSON.stringify(targets) }),
-  upload: (form: FormData) =>
-    fetch("/api/imports/upload", { method: "POST", body: form }).then(async (r) => {
+  upload: (form: FormData) => {
+    if (DEMO) return Promise.reject(new DemoReadOnlyError());
+    return fetch("/api/imports/upload", { method: "POST", body: form }).then(async (r) => {
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? r.statusText);
       return r.json();
-    }),
+    });
+  },
   manual: (entries: any[]) =>
     http("/api/imports/manual", { method: "POST", body: JSON.stringify(entries) }),
   seed: () => http("/api/admin/seed", { method: "POST" }),

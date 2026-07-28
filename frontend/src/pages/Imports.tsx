@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
+import { DEMO, REPO_URL } from "../lib/demo";
 
 const SOURCES = [
   { id: "zerodha_holdings", label: "Zerodha Holdings CSV", accept: ".csv" },
@@ -71,10 +72,12 @@ export default function Imports() {
         title="Data & Imports"
         subtitle="Upload statements, add manual assets, and review what was imported. Files are parsed locally."
         actions={
-          <>
-            <button className="btn-ghost" onClick={loadSample} disabled={!!busy}>{busy === "sample" ? "Loading…" : "Load sample data"}</button>
-            <button className="btn-ghost text-rose-600" onClick={resetAll} disabled={!!busy}>Reset</button>
-          </>
+          DEMO ? undefined : (
+            <>
+              <button className="btn-ghost" onClick={loadSample} disabled={!!busy}>{busy === "sample" ? "Loading…" : "Load sample data"}</button>
+              <button className="btn-ghost text-rose-600" onClick={resetAll} disabled={!!busy}>Reset</button>
+            </>
+          )
         }
       />
 
@@ -84,6 +87,19 @@ export default function Imports() {
         </div>
       )}
 
+      {DEMO ? (
+        <Card className="mb-4" title="Imports are disabled in the demo">
+          <p className="text-sm text-ink-soft">
+            This live demo shows a fixed <span className="font-medium">sample portfolio</span> so you can
+            explore the analytics. Uploading statements and adding assets are turned off here.
+          </p>
+          <p className="text-sm text-ink-mute mt-2">
+            To import your <span className="font-medium">own</span> data — Zerodha CSVs, mutual-fund CAS,
+            manual assets — run dhan360 locally. It's open source and your data never leaves your machine.{" "}
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-brand underline">See how to self-host →</a>
+          </p>
+        </Card>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <Card title="Upload a statement">
           <div className="space-y-3">
@@ -120,6 +136,7 @@ export default function Imports() {
 
         <ManualEntry onDone={(text) => { setMsg({ kind: "ok", text }); refreshAll(); }} />
       </div>
+      )}
 
       <GuidedCAS />
 

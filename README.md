@@ -8,6 +8,8 @@ Everything runs **locally / self-hosted**. Your CAS PDFs, broker exports and hol
 
 > ⚠️ dhan360 provides analytics only. It is **not investment advice**.
 
+**🔎 Live demo:** [dhan360.in](https://dhan360.in) — explore a sample portfolio in your browser (no install, no signup, no data collected). To use your own data, self-host (below).
+
 ---
 
 ## What it does

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { ReactNode } from "react";
+import { DEMO, REPO_URL } from "../lib/demo";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: "▦" },
@@ -44,7 +45,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           Not investment advice.
           <br />
           <a
-            href="https://github.com/dhan360/dhan360"
+            href={REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="text-ink-soft hover:text-brand underline"
@@ -54,6 +55,18 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
       </aside>
       <main className="flex-1 min-w-0 overflow-x-hidden">
+        {DEMO && (
+          <div className="bg-brand/10 border-b border-brand/20 text-brand text-sm px-6 py-2 flex items-center gap-2">
+            <span className="font-semibold">Live demo</span>
+            <span className="text-ink-soft">
+              — you're exploring a sample portfolio. Imports and edits are disabled. To use your own
+              data privately,{" "}
+              <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="underline">
+                self-host it
+              </a>.
+            </span>
+          </div>
+        )}
         <div className="max-w-7xl mx-auto px-6 py-6">{children}</div>
       </main>
     </div>

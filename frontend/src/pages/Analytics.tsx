@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
 import { formatINR, formatPct, signClass } from "../lib/format";
+import { DEMO } from "../lib/demo";
 
 type Preset = { label: string; from?: string; to?: string };
 
@@ -13,6 +14,13 @@ function fy(startYear: number): Preset {
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 function buildPresets(): Preset[] {
+  // The demo has no backend, so only the captured (date-independent) periods are available.
+  if (DEMO) {
+    return [
+      { label: "Lifetime" },
+      { label: "Jun–Dec 2025", from: "2025-06-01", to: "2025-12-31" },
+    ];
+  }
   const today = new Date();
   const y = today.getFullYear();
   const oneYearAgo = new Date(today); oneYearAgo.setFullYear(y - 1);
@@ -75,16 +83,18 @@ export default function Analytics() {
             </div>
           </div>
 
-          <div>
-            <div className="stat-label mb-1.5">Custom range</div>
-            <div className="flex items-center gap-2 text-sm">
-              <input type="date" value={custom?.from ?? ""} onChange={(e) => setCustom({ from: e.target.value, to: custom?.to ?? iso(new Date()) })}
-                className="border border-slate-200 rounded-lg px-2 py-1" />
-              <span className="text-ink-mute">→</span>
-              <input type="date" value={custom?.to ?? ""} onChange={(e) => setCustom({ from: custom?.from ?? "2020-01-01", to: e.target.value })}
-                className="border border-slate-200 rounded-lg px-2 py-1" />
+          {!DEMO && (
+            <div>
+              <div className="stat-label mb-1.5">Custom range</div>
+              <div className="flex items-center gap-2 text-sm">
+                <input type="date" value={custom?.from ?? ""} onChange={(e) => setCustom({ from: e.target.value, to: custom?.to ?? iso(new Date()) })}
+                  className="border border-slate-200 rounded-lg px-2 py-1" />
+                <span className="text-ink-mute">→</span>
+                <input type="date" value={custom?.to ?? ""} onChange={(e) => setCustom({ from: custom?.from ?? "2020-01-01", to: e.target.value })}
+                  className="border border-slate-200 rounded-lg px-2 py-1" />
+              </div>
             </div>
-          </div>
+          )}
 
           <div>
             <div className="stat-label mb-1.5">Group by</div>

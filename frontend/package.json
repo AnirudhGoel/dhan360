@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build:demo": "tsc -b && VITE_DEMO=true vite build --base=/ && cp dist/index.html dist/404.html",
+    "preview": "vite preview",
+    "preview:demo": "vite preview --outDir dist"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",
