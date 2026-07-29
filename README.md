@@ -1,6 +1,19 @@
-# dhan360 — Your portfolio, 360°
+<div align="center">
 
-**An open-source, India-first, privacy-first portfolio analytics & rebalancing app for individual investors.**
+<img src="frontend/public/logo.svg" width="72" alt="dhan360 logo" />
+
+# dhan<span>360</span>
+
+**India-first, privacy-first portfolio analytics &amp; rebalancing for individual investors.**
+
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-2563eb.svg)](LICENSE)
+&nbsp;·&nbsp; [**🔎 Live demo →**](https://dhan360.in) &nbsp;·&nbsp; Self-hosted &nbsp;·&nbsp; No signup, nothing collected
+
+<img src="docs/screenshots/dashboard-desktop.png" width="820" alt="dhan360 dashboard" />
+
+</div>
+
+---
 
 dhan360 gives an Indian retail investor a complete 360° view of their holdings across **mutual funds, direct stocks, ETFs, gold, debt, PPF, EPF, FDs, NPS, bonds, SGBs, REITs and manually-entered assets** — and helps them understand asset allocation, drift, and rebalancing. It is **not** a trading or robo-advisory tool; it's an analytics and visibility tool.
 
@@ -9,6 +22,12 @@ Everything runs **locally / self-hosted**. Your CAS PDFs, broker exports and hol
 > ⚠️ dhan360 provides analytics only. It is **not investment advice**.
 
 **🔎 Live demo:** [dhan360.in](https://dhan360.in) — explore a sample portfolio in your browser (no install, no signup, no data collected). To use your own data, self-host (below).
+
+### Screenshots
+
+| Analytics — performance curve & XIRR | Holdings (click-to-filter) | Mobile |
+|---|---|---|
+| <img src="docs/screenshots/analytics-desktop.png" width="280" alt="Analytics" /> | <img src="docs/screenshots/holdings-desktop.png" width="280" alt="Holdings" /> | <img src="docs/screenshots/dashboard-mobile.png" width="150" alt="Mobile" /> |
 
 ---
 

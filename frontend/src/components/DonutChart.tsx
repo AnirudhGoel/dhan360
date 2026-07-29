@@ -44,8 +44,8 @@ export default function DonutChart({ data, onSliceClick, activeLabel, centerLabe
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="relative" style={{ width: 190, height: 190 }}>
+    <div className="flex flex-col sm:flex-row items-center gap-4">
+      <div className="relative shrink-0" style={{ width: 190, height: 190 }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -93,7 +93,7 @@ export default function DonutChart({ data, onSliceClick, activeLabel, centerLabe
         </div>
       </div>
 
-      <ul className="flex-1 min-w-0 space-y-1.5">
+      <ul className="w-full sm:flex-1 min-w-0 space-y-1.5">
         {filtered.map((d, i) => (
           <li
             key={d.label}

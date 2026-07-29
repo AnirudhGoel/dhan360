@@ -8,10 +8,10 @@ import { formatCompactINR, formatINR, formatPct, signClass } from "../lib/format
 
 function Stat({ label, value, sub, subClass }: { label: string; value: string; sub?: string; subClass?: string }) {
   return (
-    <div className="card p-4">
-      <div className="stat-label">{label}</div>
-      <div className="text-2xl font-bold text-ink mt-1 tabular-nums">{value}</div>
-      {sub && <div className={`text-sm mt-0.5 ${subClass ?? "text-ink-mute"}`}>{sub}</div>}
+    <div className="card p-4 min-w-0">
+      <div className="stat-label truncate">{label}</div>
+      <div className="text-lg sm:text-2xl font-bold text-ink mt-1 tabular-nums truncate">{value}</div>
+      {sub && <div className={`text-xs sm:text-sm mt-0.5 truncate ${subClass ?? "text-ink-mute"}`}>{sub}</div>}
     </div>
   );
 }
