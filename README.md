@@ -4,7 +4,9 @@
 
 # dhan<span>360</span>
 
-**India-first, privacy-first portfolio analytics &amp; rebalancing for individual investors.**
+**India-first, privacy-first portfolio analytics &amp; rebalancing — your data never leaves your machine.**
+
+<sub>And it goes deep: fund **look-through** to true sector/cap exposure, direct-vs-fund **overlap**, **XIRR** &amp; a performance curve, and **rebalancing** insights — the kind of depth normally locked in paid tools, here free, open, and 100% local.</sub>
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-2563eb.svg)](LICENSE)
 &nbsp;·&nbsp; [**🔎 Live demo →**](https://dhan360.in) &nbsp;·&nbsp; Self-hosted &nbsp;·&nbsp; No signup, nothing collected
