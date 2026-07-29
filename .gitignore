@@ -24,3 +24,6 @@ npm-debug.log*
 
 # TS build cache
 frontend/*.tsbuildinfo
+
+# Personal launch notes (not published)
+docs/launch.md
