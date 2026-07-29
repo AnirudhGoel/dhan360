@@ -1,0 +1,23 @@
+# Keep the build context lean and correct — never ship host-built or local-only files.
+**/.git
+**/.gitignore
+**/node_modules
+frontend/dist
+frontend/*.tsbuildinfo
+backend/.venv
+**/__pycache__
+**/*.pyc
+.pytest_cache
+
+# Local data must never enter the image (it's mounted at runtime as a volume).
+data/
+**/*.db
+**/*.db-wal
+**/*.db-shm
+backend/.env
+
+# Private / OS
+docs/launch.md
+.DS_Store
+.vscode
+.idea
