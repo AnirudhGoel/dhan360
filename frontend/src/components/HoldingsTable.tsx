@@ -1,6 +1,7 @@
 import { Holding } from "../lib/api";
 import { formatINR, formatPct, signClass } from "../lib/format";
 import { ConfidenceBadge } from "./Common";
+import { InfoTip } from "./InfoTip";
 import { ASSET_COLORS } from "../lib/colors";
 
 export default function HoldingsTable({
@@ -25,7 +26,7 @@ export default function HoldingsTable({
             <th className="text-right">Current</th>
             <th className="text-right">P&L</th>
             {showContribution && <th className="text-right">Contributes</th>}
-            <th>Confidence</th>
+            <th><span className="inline-flex items-center">Confidence<InfoTip term="confidence" /></span></th>
           </tr>
         </thead>
         <tbody>

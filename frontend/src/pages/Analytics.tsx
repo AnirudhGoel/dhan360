@@ -5,6 +5,7 @@ import { Card, Loading, PageHeader } from "../components/Common";
 import { formatINR, formatPct, signClass } from "../lib/format";
 import { DEMO } from "../lib/demo";
 import PerformanceCurve from "../components/PerformanceCurve";
+import { InfoTip } from "../components/InfoTip";
 
 type Preset = { label: string; from?: string; to?: string };
 
@@ -128,10 +129,10 @@ export default function Analytics() {
                 <thead>
                   <tr>
                     <th>{scope === "instrument" ? "Holding" : scope === "asset_class" ? "Asset class" : "Portfolio"}</th>
-                    <th className="text-right">XIRR</th>
+                    <th className="text-right"><span className="inline-flex items-center justify-end">XIRR<InfoTip term="xirr" /></span></th>
                     <th className="text-right">Current value</th>
                     <th className="text-right">Invested</th>
-                    <th className="text-right">XIRR coverage</th>
+                    <th className="text-right"><span className="inline-flex items-center justify-end">XIRR coverage<InfoTip term="coverage" /></span></th>
                     <th>Notes</th>
                   </tr>
                 </thead>

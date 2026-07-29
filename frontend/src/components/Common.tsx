@@ -12,12 +12,12 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
   );
 }
 
-export function Card({ title, children, className = "", actions }: { title?: string; children: ReactNode; className?: string; actions?: ReactNode }) {
+export function Card({ title, children, className = "", actions }: { title?: ReactNode; children: ReactNode; className?: string; actions?: ReactNode }) {
   return (
     <div className={`card p-4 ${className}`}>
       {(title || actions) && (
-        <div className="flex items-center justify-between mb-3">
-          {title && <h3 className="font-semibold text-ink">{title}</h3>}
+        <div className="flex items-center justify-between mb-3 gap-2">
+          {title && <h3 className="font-semibold text-ink flex items-center">{title}</h3>}
           {actions}
         </div>
       )}

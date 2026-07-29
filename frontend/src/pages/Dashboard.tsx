@@ -1,15 +1,17 @@
+import { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
 import DonutChart from "../components/DonutChart";
 import BarList from "../components/BarList";
+import { InfoTip } from "../components/InfoTip";
 import { formatCompactINR, formatINR, formatPct, signClass } from "../lib/format";
 
-function Stat({ label, value, sub, subClass }: { label: string; value: string; sub?: string; subClass?: string }) {
+function Stat({ label, value, sub, subClass }: { label: ReactNode; value: string; sub?: string; subClass?: string }) {
   return (
     <div className="card p-4 min-w-0">
-      <div className="stat-label truncate">{label}</div>
+      <div className="stat-label flex items-center">{label}</div>
       <div className="text-lg sm:text-2xl font-bold text-ink mt-1 tabular-nums truncate">{value}</div>
       {sub && <div className={`text-xs sm:text-sm mt-0.5 truncate ${subClass ?? "text-ink-mute"}`}>{sub}</div>}
     </div>
@@ -59,7 +61,7 @@ export default function Dashboard() {
           subClass={signClass(data.pnl)}
         />
         <Stat
-          label="Estimated exposure"
+          label={<>Estimated exposure<InfoTip term="estimated" /></>}
           value={formatPct(data.estimated_pct)}
           sub={`${formatCompactINR(data.estimated_value)} via modelled look-through`}
         />
@@ -73,7 +75,7 @@ export default function Dashboard() {
             centerValue={formatCompactINR(data.net_worth)}
           />
         </Card>
-        <Card title="Equity — Market Cap" actions={<span className="text-xs text-ink-mute">incl. fund look-through</span>}>
+        <Card title={<>Equity — Market Cap<InfoTip term="look_through" /></>} actions={<span className="text-xs text-ink-mute">incl. fund look-through</span>}>
           <DonutChart
             data={data.equity_cap_split}
             onSliceClick={(label) => toHoldings({ cap: label })}

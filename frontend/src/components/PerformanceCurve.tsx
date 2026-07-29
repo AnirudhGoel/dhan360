@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { api } from "../lib/api";
 import { Card, Loading } from "./Common";
+import { InfoTip } from "./InfoTip";
 import { formatCompactINR, formatINR, formatPct } from "../lib/format";
 
 function CurveTooltip({ active, payload }: any) {
@@ -30,7 +31,9 @@ function CurveTooltip({ active, payload }: any) {
 export default function PerformanceCurve() {
   const { data, isLoading } = useQuery({ queryKey: ["performance"], queryFn: api.performance });
 
-  const title = "Mutual Fund Performance";
+  const title = (
+    <>Mutual Fund Performance<InfoTip term="time_weighted" /></>
+  );
   if (isLoading || !data) {
     return <Card title={title}><Loading /></Card>;
   }

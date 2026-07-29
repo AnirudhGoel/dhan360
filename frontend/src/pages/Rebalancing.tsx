@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, RebalanceLine } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
+import { InfoTip } from "../components/InfoTip";
 import { formatINR, formatPct } from "../lib/format";
 
 const ACTION_STYLES: Record<string, string> = {
@@ -108,7 +109,7 @@ function RebalanceTable({ lines, mode }: { lines: RebalanceLine[]; mode: string 
             <th>Asset Class</th>
             <th className="text-right">Current</th>
             <th className="text-right">Target</th>
-            <th className="text-right">Drift</th>
+            <th className="text-right"><span className="inline-flex items-center justify-end">Drift<InfoTip term="drift" /></span></th>
             <th>Status</th>
             <th className="text-right">{mode === "new_money" ? "Invest" : "Action"}</th>
           </tr>

@@ -9,7 +9,9 @@
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-2563eb.svg)](LICENSE)
 &nbsp;·&nbsp; [**🔎 Live demo →**](https://dhan360.in) &nbsp;·&nbsp; Self-hosted &nbsp;·&nbsp; No signup, nothing collected
 
-<img src="docs/screenshots/dashboard-desktop.png" width="820" alt="dhan360 dashboard" />
+<img src="docs/screenshots/demo.gif" width="820" alt="dhan360 walkthrough" />
+
+<sub>Dashboard → click-to-filter → performance curve → funds → rebalancing → transactions</sub>
 
 </div>
 

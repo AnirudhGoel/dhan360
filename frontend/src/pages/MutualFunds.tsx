@@ -3,6 +3,7 @@ import { api } from "../lib/api";
 import { Card, ConfidenceBadge, Loading, PageHeader } from "../components/Common";
 import BarList from "../components/BarList";
 import DonutChart from "../components/DonutChart";
+import { InfoTip } from "../components/InfoTip";
 import { formatINR, formatPct, signClass } from "../lib/format";
 import { ASSET_COLORS } from "../lib/colors";
 
@@ -18,7 +19,7 @@ export default function MutualFunds() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <Card title="By AMC"><BarList data={data.by_amc} /></Card>
         <Card title="Direct vs Regular"><DonutChart data={data.by_plan} centerLabel="Plan" /></Card>
-        <Card title="Direct ↔ Stock Overlap">
+        <Card title={<>Direct ↔ Stock Overlap<InfoTip term="overlap" /></>}>
           {overlapQ.data ? (
             <div>
               <div className="text-2xl font-bold text-ink">{formatPct(overlapQ.data.overlap_pct)}</div>
