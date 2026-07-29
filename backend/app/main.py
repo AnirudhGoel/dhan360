@@ -52,10 +52,16 @@ _FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 if _FRONTEND_DIST.is_dir():
     app.mount("/assets", StaticFiles(directory=_FRONTEND_DIST / "assets"), name="assets")
 
+    def _index_response() -> FileResponse:
+        # The SPA shell must revalidate every load so a rebuilt bundle (new hashed asset names)
+        # is always picked up — otherwise a cached index.html keeps loading the old JS/CSS.
+        # The hashed /assets files stay immutably cacheable, so only this tiny HTML revalidates.
+        return FileResponse(_FRONTEND_DIST / "index.html", headers={"Cache-Control": "no-cache"})
+
     @app.get("/{full_path:path}")
     def spa(full_path: str):  # noqa: ANN201
         # Serve real files when present, else fall back to index.html for client routing.
         candidate = _FRONTEND_DIST / full_path
         if full_path and candidate.is_file():
             return FileResponse(candidate)
-        return FileResponse(_FRONTEND_DIST / "index.html")
+        return _index_response()
