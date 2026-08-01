@@ -1,5 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { api } from "../lib/api";
+import { useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { api, CLIENT } from "../lib/api";
+import { clientApi } from "../engine/clientApi";
 import { Card, Loading, PageHeader } from "../components/Common";
 import { formatINR, formatPct } from "../lib/format";
 
@@ -59,6 +61,42 @@ export default function Reports() {
           <p className="text-[11px] text-ink-mute mt-3">Capital-gains & XIRR reports are placeholders in this MVP — see the roadmap.</p>
         </Card>
       </div>
+
+      {CLIENT && <BackupCard />}
     </>
+  );
+}
+
+// Browser-local storage can be evicted, so a portable backup is essential in client mode.
+function BackupCard() {
+  const qc = useQueryClient();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const restore = async (file: File) => {
+    try {
+      await clientApi.importBackup(file);
+      qc.invalidateQueries();
+      setMsg("Backup restored.");
+    } catch (e: any) {
+      setMsg("Couldn't read that file: " + e.message);
+    }
+  };
+
+  return (
+    <Card title="Backup & restore" className="mt-4">
+      <p className="text-sm text-ink-soft mb-3">
+        Your data lives in <span className="font-medium">this browser</span> — nothing is on a server.
+        Browsers can clear site storage, so <span className="font-medium">download a backup</span> regularly
+        and keep it safe. You can restore it here or in any other browser.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button className="btn-primary" onClick={() => clientApi.exportBackup()}>⤓ Download backup (JSON)</button>
+        <button className="btn-ghost" onClick={() => fileRef.current?.click()}>↥ Restore from backup…</button>
+        <input ref={fileRef} type="file" accept=".json" className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) restore(f); e.target.value = ""; }} />
+      </div>
+      {msg && <p className="text-xs text-ink-mute mt-2">{msg}</p>}
+    </Card>
   );
 }
