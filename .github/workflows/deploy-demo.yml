@@ -1,6 +1,7 @@
-# Builds the backend-free demo (VITE_DEMO=true) and publishes it to GitHub Pages.
-# The demo serves a bundled sample portfolio — no server, no user data.
-name: Deploy demo to GitHub Pages
+# Builds the fully client-side app (VITE_CLIENT=true) and publishes it to GitHub Pages.
+# Runs entirely in the browser (data in IndexedDB, no server). First visit shows the sample
+# portfolio; visitors can import their own data and it stays on their device.
+name: Deploy dhan360 to GitHub Pages
 
 on:
   push:
@@ -32,9 +33,9 @@ jobs:
       - name: Install
         working-directory: frontend
         run: npm ci
-      - name: Build demo
+      - name: Build client app (fully in-browser; seeds sample data on first visit)
         working-directory: frontend
-        run: npm run build:demo
+        run: npm run build:client
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
