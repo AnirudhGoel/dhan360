@@ -63,6 +63,7 @@ export interface RebalanceLine {
 }
 
 import { DEMO, demoGet, DemoReadOnlyError } from "./demo";
+import { clientApi } from "../engine/clientApi";
 
 async function http<T>(url: string, opts?: RequestInit): Promise<T> {
   if (DEMO) {
@@ -86,7 +87,7 @@ async function http<T>(url: string, opts?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export const api = {
+const httpApi = {
   summary: () => http<Summary>("/api/portfolio/summary"),
   holdings: (params: Record<string, string> = {}) => {
     const q = new URLSearchParams(params).toString();
@@ -158,3 +159,8 @@ export const api = {
   reset: () => http("/api/admin/reset", { method: "POST" }),
   reclassify: () => http("/api/admin/reclassify", { method: "POST" }),
 };
+
+// Client mode (VITE_CLIENT=true): everything runs in the browser against the local engine —
+// no backend, data stays on the device. Falls back to the HTTP backend for self-host.
+export const CLIENT = import.meta.env.VITE_CLIENT === "true";
+export const api: typeof httpApi = CLIENT ? (clientApi as unknown as typeof httpApi) : httpApi;

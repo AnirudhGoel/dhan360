@@ -1,0 +1,281 @@
+{
+  "_comment": "Anonymized CAS. Units/NAVs reconciled to real AMFI history via scripts/gen_sample_cas.py so the performance curve & XIRR reflect these funds' actual returns. Regenerate to refresh.",
+  "statement_period": {
+    "from": "2020-01-01",
+    "to": "2026-07-28"
+  },
+  "investor_info": {
+    "name": "Sample Investor",
+    "email": "investor@example.com"
+  },
+  "folios": [
+    {
+      "folio": "10234567/0",
+      "amc": "PPFAS Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth",
+          "isin": "INF879O01027",
+          "amfi": "122639",
+          "advisor": "DIRECT",
+          "type": "EQUITY",
+          "open": 0,
+          "close": 1770.867,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 90.3512,
+            "value": 159999.96
+          },
+          "transactions": [
+            {
+              "date": "2021-01-15",
+              "amount": 66511.11,
+              "units": 1770.867,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "991234567",
+      "amc": "HDFC Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth",
+          "isin": "INF179K01BE2",
+          "amfi": "118989",
+          "advisor": "DIRECT",
+          "type": "EQUITY",
+          "open": 0,
+          "close": 566.133,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 229.628,
+            "value": 129999.99
+          },
+          "transactions": [
+            {
+              "date": "2021-03-01",
+              "amount": 44575.05,
+              "units": 566.133,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "880011223",
+      "amc": "Axis Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "Axis Small Cap Fund - Direct Plan - Growth",
+          "isin": "INF846K01EW2",
+          "amfi": "125354",
+          "advisor": "DIRECT",
+          "type": "EQUITY",
+          "open": 0,
+          "close": 906.413,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 132.39,
+            "value": 120000.02
+          },
+          "transactions": [
+            {
+              "date": "2021-05-01",
+              "amount": 45547.25,
+              "units": 906.413,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "773344556",
+      "amc": "Mirae Asset Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "Mirae Asset Large & Midcap Fund - Direct Plan - Growth",
+          "isin": "INF769K01010",
+          "amfi": "119598",
+          "advisor": "DIRECT",
+          "type": "EQUITY",
+          "open": 0,
+          "close": 1106.645,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 103.9177,
+            "value": 115000.0
+          },
+          "transactions": [
+            {
+              "date": "2021-02-01",
+              "amount": 59101.59,
+              "units": 1106.645,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "665544332",
+      "amc": "ICICI Prudential Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "ICICI Prudential Nifty 50 Index Fund - Direct Plan - Growth",
+          "isin": "INF109K012R6",
+          "amfi": "120505",
+          "advisor": "DIRECT",
+          "type": "EQUITY",
+          "open": 0,
+          "close": 638.207,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 141.02,
+            "value": 89999.95
+          },
+          "transactions": [
+            {
+              "date": "2022-01-01",
+              "amount": 49920.55,
+              "units": 638.207,
+              "type": "PURCHASE"
+            }
+          ]
+        },
+        {
+          "scheme": "ICICI Prudential Corporate Bond Fund - Direct Plan - Growth",
+          "isin": "INF109K01Z48",
+          "amfi": "135781",
+          "advisor": "DIRECT",
+          "type": "DEBT",
+          "open": 0,
+          "close": 1667.018,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 56.988,
+            "value": 95000.02
+          },
+          "transactions": [
+            {
+              "date": "2022-04-01",
+              "amount": 56361.88,
+              "units": 1667.018,
+              "type": "PURCHASE"
+            }
+          ]
+        },
+        {
+          "scheme": "ICICI Prudential Balanced Advantage Fund - Direct Plan - Growth",
+          "isin": "INF109K01T07",
+          "amfi": "118533",
+          "advisor": "DIRECT",
+          "type": "HYBRID",
+          "open": 0,
+          "close": 78.588,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 3181.143,
+            "value": 249999.67
+          },
+          "transactions": [
+            {
+              "date": "2021-06-01",
+              "amount": 113366.62,
+              "units": 78.588,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "554433221",
+      "amc": "Motilal Oswal Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "Motilal Oswal Nasdaq 100 Fund of Fund - Direct Plan - Growth",
+          "isin": "INF247L01AB9",
+          "amfi": "147794",
+          "advisor": "DIRECT",
+          "type": "OTHER",
+          "open": 0,
+          "close": 7644.456,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 20.9302,
+            "value": 159999.99
+          },
+          "transactions": [
+            {
+              "date": "2021-07-01",
+              "amount": 99449.79,
+              "units": 7644.456,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "443322110",
+      "amc": "SBI Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "SBI Gold Fund - Direct Plan - Growth",
+          "isin": "INF200K01T28",
+          "amfi": "119775",
+          "advisor": "DIRECT",
+          "type": "OTHER",
+          "open": 0,
+          "close": 587.769,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 170.135,
+            "value": 100000.08
+          },
+          "transactions": [
+            {
+              "date": "2021-08-01",
+              "amount": 43979.23,
+              "units": 587.769,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folio": "332211009",
+      "amc": "Nippon India Mutual Fund",
+      "schemes": [
+        {
+          "scheme": "Nippon India Liquid Fund - Direct Plan - Growth",
+          "isin": "INF204K01XR2",
+          "amfi": "120053",
+          "advisor": "DIRECT",
+          "type": "DEBT",
+          "open": 0,
+          "close": 1680.0,
+          "valuation": {
+            "date": "2026-07-28",
+            "nav": 100.0,
+            "value": 168000.0
+          },
+          "transactions": [
+            {
+              "date": "2023-10-01",
+              "amount": 134400.0,
+              "units": 1680.0,
+              "type": "PURCHASE"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
