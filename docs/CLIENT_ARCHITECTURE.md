@@ -60,8 +60,12 @@ imports are fully client-side today.
 ## Status / roadmap
 
 - ✅ Phase 1 — client engine (parse/classify/aggregate/XIRR/performance), local store, backup, wiring.
-- ⬜ `parse-cas` microservice (or pdf.js) for client-side CAS PDF.
-- ⬜ Deploy the client build to dhan360.in (change the Pages workflow `build:demo` → `build:client`).
-- ⬜ Equity + combined performance/period-XIRR once a stock price feed exists.
-- ⬜ Optional end-to-end-encrypted sync (server stores ciphertext only) for cross-device.
+- ✅ `parse-cas` microservice for client-side CAS PDF (`services/parse-cas`; set `VITE_PARSE_CAS_URL`).
+- ✅ Deploy the client build to dhan360.in (Pages workflow builds `build:client`).
+- ✅ Direct-equity **period** XIRR/perf via a **historical-price CSV import** (fills the price cache).
+- ⬜ *Automate* the equity price feed (e.g. a Kite provider that produces those price points) — needs
+  the user's Kite API access. The client price-cache plumbing is already in place.
+- ⬜ Combined (equity + MF) performance curve + Nifty benchmark overlay.
+- ⬜ Optional end-to-end-encrypted sync (server stores ciphertext only) for cross-device — a separate
+  project (key management from a passphrase + a tiny blob-storage endpoint).
 - ⬜ Eventually retire the Python backend, leaving one TS engine + the tiny PDF service.
