@@ -145,8 +145,19 @@ export const clientApi = {
     else if (source === "zerodha_holdings") result = parseZerodhaHoldings(text, file.name, accountName);
     else if (source === "zerodha_tradebook") result = parseZerodhaTradebook(text, file.name, accountName);
     else if (source === "generic_csv") result = parseGenericCsv(text, file.name, accountName);
-    else if (source === "cas_pdf") throw new Error("CAS PDF parsing runs via the (optional) parse service — not wired in this client build yet. Convert locally with casparser and upload the JSON, or self-host.");
-    else throw new Error(`Unknown source '${source}'.`);
+    else if (source === "cas_pdf") {
+      // The one server call: a stateless parse-cas service turns the PDF into CAS JSON, which we
+      // then process locally. Nothing about the PDF is stored. Requires VITE_PARSE_CAS_URL at build.
+      const base = import.meta.env.VITE_PARSE_CAS_URL;
+      if (!base) throw new Error("CAS PDF parsing isn't configured for this build. Convert locally with casparser and upload the JSON (Advanced), or self-host.");
+      const password = (form.get("password") as string) || "";
+      const svcForm = new FormData();
+      svcForm.append("file", file);
+      svcForm.append("password", password);
+      const resp = await fetch(`${base.replace(/\/$/, "")}/parse-cas`, { method: "POST", body: svcForm });
+      if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).detail ?? "CAS PDF parse failed.");
+      result = parseCasJson(await resp.json(), file.name, "cas_pdf");
+    } else throw new Error(`Unknown source '${source}'.`);
     const batch = processParseResult(store, result);
     await persist();
     return { ...batch, diagnostics: batch.diagnostics ? JSON.parse(batch.diagnostics) : [] };
