@@ -11,6 +11,7 @@ import { parseZerodhaTradebook } from "./parse/zerodhaTradebook";
 import { parseGenericCsv } from "./parse/genericCsv";
 import { parseCasJson } from "./parse/casJson";
 import { parseManualEntries, ManualEntry } from "./parse/manual";
+import { importPriceCsv } from "./pipeline/importPrices";
 import { summary } from "./portfolio/aggregate";
 import { holdingsPayload } from "./portfolio/holdingsView";
 import { transactionsPayload } from "./portfolio/transactionsView";
@@ -140,6 +141,15 @@ export const clientApi = {
     const accountName = (form.get("account_name") as string) || undefined;
     const file = form.get("file") as File;
     const text = await file.text();
+
+    // Historical prices don't create holdings — they fill the price cache for period XIRR/perf.
+    if (source === "prices_csv") {
+      importPriceCsv(store, text, file.name);
+      await persist();
+      const batch = store.imports[store.imports.length - 1];
+      return { ...batch, diagnostics: batch.diagnostics ? JSON.parse(batch.diagnostics) : [] };
+    }
+
     let result;
     if (source === "cas_json") result = parseCasJson(JSON.parse(text), file.name);
     else if (source === "zerodha_holdings") result = parseZerodhaHoldings(text, file.name, accountName);

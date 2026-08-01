@@ -10,6 +10,7 @@ const SOURCES = [
   { id: "cas_json", label: "CAS JSON (casparser)", accept: ".json" },
   { id: "cas_pdf", label: "CAS PDF (CAMS/KFintech)", accept: ".pdf" },
   { id: "generic_csv", label: "Generic CSV template", accept: ".csv" },
+  { id: "prices_csv", label: "Historical prices CSV", accept: ".csv" },
 ];
 
 const MANUAL_TYPES = ["ppf", "epf", "fd", "sgb", "nps", "bond", "gsec", "reit", "invit", "digital_gold", "real_estate", "cash", "other"];
