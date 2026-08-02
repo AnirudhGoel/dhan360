@@ -1,0 +1,14 @@
+{
+  "_comment": "Representative AMFI scheme snapshot: scheme_code -> {name, category, amc, plan}. The full AMFI NAVAll.txt has ~10k rows; refresh with scripts/fetch_refdata.py. The engine also falls back to name-pattern matching when a code is absent, so an incomplete snapshot degrades gracefully.",
+  "122639": {"name": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth", "category": "Flexi Cap Fund", "amc": "PPFAS Mutual Fund", "plan": "direct"},
+  "119598": {"name": "Mirae Asset Large & Midcap Fund - Direct Plan - Growth", "category": "Large & Mid Cap Fund", "amc": "Mirae Asset Mutual Fund", "plan": "direct"},
+  "125354": {"name": "Axis Small Cap Fund - Direct Plan - Growth", "category": "Small Cap Fund", "amc": "Axis Mutual Fund", "plan": "direct"},
+  "118989": {"name": "HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth", "category": "Mid Cap Fund", "amc": "HDFC Mutual Fund", "plan": "direct"},
+  "120505": {"name": "ICICI Prudential Nifty 50 Index Fund - Direct Plan - Growth", "category": "Index Fund", "amc": "ICICI Prudential Mutual Fund", "plan": "direct"},
+  "147794": {"name": "Motilal Oswal Nasdaq 100 Fund of Fund - Direct Plan - Growth", "category": "Fund of Funds Overseas", "amc": "Motilal Oswal Mutual Fund", "plan": "direct"},
+  "119775": {"name": "SBI Gold Fund - Direct Plan - Growth", "category": "Gold FoF", "amc": "SBI Mutual Fund", "plan": "direct"},
+  "120053": {"name": "Nippon India Liquid Fund - Direct Plan - Growth", "category": "Liquid Fund", "amc": "Nippon India Mutual Fund", "plan": "direct"},
+  "135781": {"name": "ICICI Prudential Corporate Bond Fund - Direct Plan - Growth", "category": "Corporate Bond", "amc": "ICICI Prudential Mutual Fund", "plan": "direct"},
+  "118533": {"name": "ICICI Prudential Balanced Advantage Fund - Direct Plan - Growth", "category": "Balanced Advantage", "amc": "ICICI Prudential Mutual Fund", "plan": "direct"},
+  "100822": {"name": "HDFC Equity Fund - Regular Plan - Growth", "category": "Flexi Cap Fund", "amc": "HDFC Mutual Fund", "plan": "regular"}
+}

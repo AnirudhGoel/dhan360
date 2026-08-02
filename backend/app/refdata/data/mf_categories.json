@@ -1,0 +1,43 @@
+{
+  "_comment": "SEBI/AMFI scheme category -> classification + an *estimated* look-through split used ONLY when no actual portfolio disclosure exists. Splits are fractions that sum to ~1 across the cap/asset buckets. equity_split keys use cap names; asset_split keys use asset-class names. Matching is done by normalized substring against the category and, failing that, the scheme name.",
+  "categories": {
+    "Large Cap Fund":      {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.85, "Mid Cap": 0.10, "Small Cap": 0.05}},
+    "Large & Mid Cap Fund":{"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.50, "Mid Cap": 0.40, "Small Cap": 0.10}},
+    "Mid Cap Fund":        {"asset_class": "Equity", "sub_class": "Mid Cap",   "equity_split": {"Large Cap": 0.15, "Mid Cap": 0.70, "Small Cap": 0.15}},
+    "Small Cap Fund":      {"asset_class": "Equity", "sub_class": "Small Cap", "equity_split": {"Large Cap": 0.10, "Mid Cap": 0.25, "Small Cap": 0.65}},
+    "Flexi Cap Fund":      {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.60, "Mid Cap": 0.25, "Small Cap": 0.15}},
+    "Multi Cap Fund":      {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.45, "Mid Cap": 0.30, "Small Cap": 0.25}},
+    "Focused Fund":        {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.65, "Mid Cap": 0.25, "Small Cap": 0.10}},
+    "ELSS":                {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.60, "Mid Cap": 0.25, "Small Cap": 0.15}},
+    "Value Fund":          {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.60, "Mid Cap": 0.25, "Small Cap": 0.15}},
+    "Index Fund":          {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.85, "Mid Cap": 0.12, "Small Cap": 0.03}},
+    "Sectoral/Thematic":   {"asset_class": "Equity", "sub_class": "Large Cap", "equity_split": {"Large Cap": 0.60, "Mid Cap": 0.30, "Small Cap": 0.10}},
+
+    "International":        {"asset_class": "International Equity", "sub_class": "International Equity"},
+    "Fund of Funds Overseas": {"asset_class": "International Equity", "sub_class": "International Equity"},
+
+    "Aggressive Hybrid":   {"asset_class": "Equity", "sub_class": "Large Cap", "asset_split": {"Equity": 0.70, "Debt": 0.25, "Cash": 0.05}, "equity_split": {"Large Cap": 0.70, "Mid Cap": 0.20, "Small Cap": 0.10}},
+    "Balanced Advantage":  {"asset_class": "Equity", "sub_class": "Large Cap", "asset_split": {"Equity": 0.55, "Debt": 0.40, "Cash": 0.05}, "equity_split": {"Large Cap": 0.80, "Mid Cap": 0.15, "Small Cap": 0.05}},
+    "Conservative Hybrid": {"asset_class": "Debt",   "sub_class": "Short Duration", "asset_split": {"Equity": 0.20, "Debt": 0.75, "Cash": 0.05}},
+    "Equity Savings":      {"asset_class": "Equity", "sub_class": "Large Cap", "asset_split": {"Equity": 0.40, "Debt": 0.35, "Cash": 0.25}},
+    "Multi Asset Allocation": {"asset_class": "Equity", "sub_class": "Large Cap", "asset_split": {"Equity": 0.50, "Debt": 0.30, "Gold": 0.15, "Cash": 0.05}},
+    "Arbitrage Fund":      {"asset_class": "Cash",   "sub_class": "Cash"},
+
+    "Gold":                {"asset_class": "Gold", "sub_class": "Gold Mutual Fund"},
+    "Gold FoF":            {"asset_class": "Gold", "sub_class": "Gold Mutual Fund"},
+
+    "Liquid Fund":         {"asset_class": "Debt", "sub_class": "Liquid/Overnight"},
+    "Overnight Fund":      {"asset_class": "Debt", "sub_class": "Liquid/Overnight"},
+    "Money Market":        {"asset_class": "Debt", "sub_class": "Liquid/Overnight"},
+    "Ultra Short Duration":{"asset_class": "Debt", "sub_class": "Short Duration"},
+    "Low Duration":        {"asset_class": "Debt", "sub_class": "Short Duration"},
+    "Short Duration":      {"asset_class": "Debt", "sub_class": "Short Duration"},
+    "Medium Duration":     {"asset_class": "Debt", "sub_class": "Short Duration"},
+    "Corporate Bond":      {"asset_class": "Debt", "sub_class": "Corporate Bond"},
+    "Credit Risk":         {"asset_class": "Debt", "sub_class": "Corporate Bond"},
+    "Banking and PSU":     {"asset_class": "Debt", "sub_class": "Corporate Bond"},
+    "Dynamic Bond":        {"asset_class": "Debt", "sub_class": "Gilt/G-Sec"},
+    "Gilt":                {"asset_class": "Debt", "sub_class": "Gilt/G-Sec"},
+    "Long Duration":       {"asset_class": "Debt", "sub_class": "Gilt/G-Sec"}
+  }
+}

@@ -21,11 +21,14 @@
 
 dhan360 gives an Indian retail investor a complete 360° view of their holdings across **mutual funds, direct stocks, ETFs, gold, debt, PPF, EPF, FDs, NPS, bonds, SGBs, REITs and manually-entered assets** — and helps them understand asset allocation, drift, and rebalancing. It is **not** a trading or robo-advisory tool; it's an analytics and visibility tool.
 
-Everything runs **locally / self-hosted**. Your CAS PDFs, broker exports and holdings never leave your machine.
+It's **privacy-first by design** — there are two ways to run it, and with both, **your data never leaves your device**:
+
+- **🌐 Use it now at [dhan360.in](https://dhan360.in)** — the *entire app runs in your browser*. Import your own files and all the parsing and analytics happen on your device; data is stored locally (IndexedDB) and **never uploaded**. No install, no signup, no account. (First visit shows a sample portfolio you can replace with your own.)
+- **🖥️ Or self-host** with Docker for a fully offline setup on your own machine (Python backend + local SQLite).
+
+The one optional exception is CAS **PDF** parsing (a native library that can't run in-browser), handled by a tiny **stateless** service that parses in memory and stores nothing — or you can convert locally and upload the JSON. See [docs/CLIENT_ARCHITECTURE.md](docs/CLIENT_ARCHITECTURE.md).
 
 > ⚠️ dhan360 provides analytics only. It is **not investment advice**.
-
-**🔎 Live demo:** [dhan360.in](https://dhan360.in) — explore a sample portfolio in your browser (no install, no signup, no data collected). To use your own data, self-host (below).
 
 ### Screenshots
 
@@ -58,12 +61,16 @@ dhan360 never just labels "all ETFs = equity". A gold ETF is **Gold**, a Bharat 
 
 ## Tech stack
 
+dhan360 has **two runtimes that share one React UI** (see [docs/CLIENT_ARCHITECTURE.md](docs/CLIENT_ARCHITECTURE.md)):
+
 | Layer | Choice |
 |---|---|
-| Backend | **Python 3.12 · FastAPI · SQLAlchemy 2 · SQLite** (one local file) |
-| CAS parsing | **casparser** (native CAMS/KFintech PDF, incl. password-protected) |
-| Frontend | **React + Vite + TypeScript · Recharts · Tailwind** |
-| Packaging | **Docker / docker-compose** (single self-host container) |
+| UI | **React + Vite + TypeScript · Recharts · Tailwind** |
+| Client engine (browser) | **TypeScript** — parsing, classification, aggregation, XIRR, performance run in-browser; data in **IndexedDB**. Powers `dhan360.in`. |
+| Self-host backend | **Python 3.12 · FastAPI · SQLAlchemy 2 · SQLite** (one local file), packaged with **Docker** |
+| CAS parsing | **casparser** (native CAMS/KFintech PDF) — in the backend, or the stateless `parse-cas` service |
+
+The two engines are kept in lock-step by **golden-vector parity tests** (`npm test`) that assert identical output.
 
 ---
 

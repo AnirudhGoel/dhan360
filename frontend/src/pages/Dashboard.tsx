@@ -6,6 +6,9 @@ import { Card, Loading, PageHeader } from "../components/Common";
 import DonutChart from "../components/DonutChart";
 import BarList from "../components/BarList";
 import { InfoTip } from "../components/InfoTip";
+import WelcomeIntro from "../components/WelcomeIntro";
+import { CLIENT } from "../lib/api";
+import { DEMO } from "../lib/demo";
 import { formatCompactINR, formatINR, formatPct, signClass } from "../lib/format";
 
 function Stat({ label, value, sub, subClass }: { label: ReactNode; value: string; sub?: string; subClass?: string }) {
@@ -46,6 +49,7 @@ export default function Dashboard() {
 
   return (
     <>
+      {(CLIENT || DEMO) && <WelcomeIntro />}
       <PageHeader
         title="Dashboard"
         subtitle={`${data.holdings_count} holdings across all sources · click any chart to drill into holdings`}
