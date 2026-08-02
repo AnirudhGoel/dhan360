@@ -1,0 +1,37 @@
+{
+  "_comment": "Known NSE/BSE ETFs keyed by trading symbol (uppercase). This is what prevents 'all ETFs = equity'. asset_class/sub_class use the canonical taxonomy. Extend freely; refresh script can append. Sector left null for diversified/index ETFs.",
+  "GOLDBEES":   {"name": "Nippon India Gold ETF",            "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "SETFGOLD":   {"name": "SBI Gold ETF",                     "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "AXISGOLD":   {"name": "Axis Gold ETF",                    "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "HDFCGOLD":   {"name": "HDFC Gold ETF",                    "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "KOTAKGOLD":  {"name": "Kotak Gold ETF",                   "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "ICICIGOLD":  {"name": "ICICI Prudential Gold ETF",        "asset_class": "Gold", "sub_class": "Gold ETF"},
+  "SILVERBEES": {"name": "Nippon India Silver ETF",          "asset_class": "Others", "sub_class": "Silver"},
+
+  "LIQUIDBEES": {"name": "Nippon India Liquid ETF",          "asset_class": "Debt", "sub_class": "Liquid/Overnight"},
+  "LIQUIDCASE": {"name": "Mirae Asset Liquid ETF",           "asset_class": "Debt", "sub_class": "Liquid/Overnight"},
+  "EBBETF0431": {"name": "Bharat Bond ETF - April 2031",     "asset_class": "Debt", "sub_class": "Corporate Bond"},
+  "EBBETF0433": {"name": "Bharat Bond ETF - April 2033",     "asset_class": "Debt", "sub_class": "Corporate Bond"},
+  "EBBETF0425": {"name": "Bharat Bond ETF - April 2025",     "asset_class": "Debt", "sub_class": "Corporate Bond"},
+  "GILT5YBEES": {"name": "Nippon India ETF 5Y G-Sec",        "asset_class": "Debt", "sub_class": "Gilt/G-Sec"},
+  "GSEC10IETF": {"name": "ICICI Prudential 10Y G-Sec ETF",   "asset_class": "Debt", "sub_class": "Gilt/G-Sec"},
+  "LTGILTBEES": {"name": "Nippon India ETF Long Term Gilt",  "asset_class": "Debt", "sub_class": "Gilt/G-Sec"},
+
+  "MON100":     {"name": "Motilal Oswal Nasdaq 100 ETF",     "asset_class": "International Equity", "sub_class": "International Equity"},
+  "MAFANG":     {"name": "Mirae Asset NYSE FANG+ ETF",       "asset_class": "International Equity", "sub_class": "International Equity"},
+  "MASPTOP50":  {"name": "Mirae Asset S&P 500 Top 50 ETF",   "asset_class": "International Equity", "sub_class": "International Equity"},
+  "HNGSNGBEES": {"name": "Nippon India Hang Seng BeES",      "asset_class": "International Equity", "sub_class": "International Equity"},
+
+  "NIFTYBEES":  {"name": "Nippon India Nifty 50 ETF",        "asset_class": "Equity", "sub_class": "Large Cap"},
+  "SETFNIF50":  {"name": "SBI Nifty 50 ETF",                "asset_class": "Equity", "sub_class": "Large Cap"},
+  "UTINIFTETF": {"name": "UTI Nifty 50 ETF",                "asset_class": "Equity", "sub_class": "Large Cap"},
+  "ICICINIFTY": {"name": "ICICI Prudential Nifty 50 ETF",    "asset_class": "Equity", "sub_class": "Large Cap"},
+  "JUNIORBEES": {"name": "Nippon India Nifty Next 50 ETF",   "asset_class": "Equity", "sub_class": "Large Cap"},
+  "BANKBEES":   {"name": "Nippon India Nifty Bank ETF",      "asset_class": "Equity", "sub_class": "Large Cap", "sector": "Financial Services"},
+  "ITBEES":     {"name": "Nippon India Nifty IT ETF",        "asset_class": "Equity", "sub_class": "Large Cap", "sector": "Information Technology"},
+  "MIDCAPETF":  {"name": "Nippon India Nifty Midcap 150 ETF","asset_class": "Equity", "sub_class": "Mid Cap"},
+  "MID150BEES": {"name": "Nippon India Nifty Midcap 150 ETF","asset_class": "Equity", "sub_class": "Mid Cap"},
+  "SMALLCAP":   {"name": "Nippon India Nifty Smallcap 250 ETF","asset_class": "Equity", "sub_class": "Small Cap"},
+
+  "MINDIA":     {"name": "Motilal Oswal Nifty India REIT/InvIT", "asset_class": "Real Estate", "sub_class": "REIT"}
+}

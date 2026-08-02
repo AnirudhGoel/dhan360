@@ -10,7 +10,9 @@ backend/.venv
 .pytest_cache
 
 # Local data must never enter the image (it's mounted at runtime as a volume).
-data/
+# Anchored so it doesn't also drop frontend/src/engine/data (bundled reference data).
+/data/
+backend/data/
 **/*.db
 **/*.db-wal
 **/*.db-shm

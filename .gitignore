@@ -5,8 +5,11 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# Local data — NEVER commit a user's financial data
-data/
+# Local data — NEVER commit a user's financial data.
+# Anchor to the runtime SQLite dirs only (a bare `data/` also matched
+# frontend/src/engine/data — the bundled reference data — and dropped it from the build).
+/data/
+backend/data/
 *.db
 *.db-wal
 *.db-shm
