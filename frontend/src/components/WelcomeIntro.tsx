@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { REPO_URL } from "../lib/demo";
 
 const KEY = "dhan360_intro_dismissed";
+const REOPEN_EVENT = "dhan360:show-intro";
+
+/** Re-open the welcome intro from anywhere (e.g. an "About" link). */
+export function showIntro() {
+  try { localStorage.removeItem(KEY); } catch { /* ignore */ }
+  window.dispatchEvent(new Event(REOPEN_EVENT));
+}
 
 const POINTS = [
   "All your assets in one view — MF, stocks, ETFs, gold, PPF, NPS, FDs, SGBs & more",
@@ -18,6 +25,11 @@ export default function WelcomeIntro() {
   const [open, setOpen] = useState(() => {
     try { return localStorage.getItem(KEY) !== "1"; } catch { return true; }
   });
+  useEffect(() => {
+    const reopen = () => setOpen(true);
+    window.addEventListener(REOPEN_EVENT, reopen);
+    return () => window.removeEventListener(REOPEN_EVENT, reopen);
+  }, []);
   if (!open) return null;
 
   const dismiss = () => {

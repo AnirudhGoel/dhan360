@@ -1,6 +1,8 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ReactNode, useState } from "react";
 import { DEMO, REPO_URL } from "../lib/demo";
+import { CLIENT } from "../lib/api";
+import { showIntro } from "./WelcomeIntro";
 import { LogoMark, LogoWordmark } from "./Logo";
 
 const NAV = [
@@ -17,6 +19,7 @@ const NAV = [
 ];
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const nav = useNavigate();
   return (
     <div className="h-full flex flex-col">
       <div className="px-5 py-5 border-b border-slate-100">
@@ -46,6 +49,17 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <br />
         Not investment advice.
         <br />
+        {(CLIENT || DEMO) && (
+          <>
+            <button
+              onClick={() => { showIntro(); nav("/"); onNavigate?.(); }}
+              className="text-ink-soft hover:text-brand underline"
+            >
+              About / Welcome
+            </button>
+            {" · "}
+          </>
+        )}
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-ink-soft hover:text-brand underline">
           Source code (AGPL-3.0)
         </a>
