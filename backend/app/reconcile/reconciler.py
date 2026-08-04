@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.models import Account, Holding, Instrument
+from app.domain.taxonomy import Source
 from app.parsers.base import ParsedHolding
 
 
@@ -92,23 +93,34 @@ def upsert_holding(
 ) -> str:
     """Create or update a holding. Returns 'created' | 'duplicate'.
 
-    A holding is unique per (account, instrument, source). Re-importing the same source
-    refreshes values in place (duplicate); a different source/account becomes a new holding.
+    A position is unique per (account, instrument) — NOT by source. Otherwise the same stock from
+    a Holdings file and a Tradebook would become two rows and be counted twice (the tradebook row,
+    lacking a market price, adds its invested cost on top of the market value). Sources merge onto
+    one position: a priced snapshot is authoritative for qty/value; a tradebook only enriches cost.
     """
     existing = db.scalar(
         select(Holding).where(
             Holding.account_id == account.id,
             Holding.instrument_id == instrument.id,
-            Holding.source == h.source.value,
         )
     )
     if existing:
-        existing.quantity = h.quantity
-        existing.avg_cost = h.avg_cost
-        existing.invested_value = h.invested_value
-        existing.current_value = h.current_value
-        existing.last_price = h.last_price
-        existing.folio = h.folio
+        is_tradebook = h.source == Source.ZERODHA_TRADEBOOK
+        if not is_tradebook:
+            existing.quantity = h.quantity
+            existing.current_value = h.current_value if h.current_value is not None else existing.current_value
+            existing.last_price = h.last_price if h.last_price is not None else existing.last_price
+            existing.avg_cost = h.avg_cost if h.avg_cost is not None else existing.avg_cost
+            existing.invested_value = h.invested_value if h.invested_value is not None else existing.invested_value
+            existing.folio = h.folio if h.folio is not None else existing.folio
+            existing.source = h.source.value
+        else:
+            if existing.current_value is None:
+                existing.quantity = h.quantity
+            if existing.avg_cost is None:
+                existing.avg_cost = h.avg_cost
+            if existing.invested_value is None:
+                existing.invested_value = h.invested_value
         existing.import_id = import_id
         return "duplicate"
 

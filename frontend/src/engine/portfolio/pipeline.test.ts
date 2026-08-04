@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { Store } from "../store/store";
 import { processParseResult } from "../pipeline/importService";
 import { parseZerodhaHoldings } from "../parse/zerodhaHoldings";
+import { parseZerodhaTradebook } from "../parse/zerodhaTradebook";
 import { parseGenericCsv } from "../parse/genericCsv";
 import { parseCasJson } from "../parse/casJson";
 import { summary } from "./aggregate";
@@ -53,5 +54,33 @@ describe("full pipeline parity vs Python", () => {
     const d = pct(s.debt_split);
     expect(d["PPF"]).toBeCloseTo(42.99, 1);
     expect(d["Corporate Bond"]).toBeCloseTo(12.29, 1);
+  });
+});
+
+describe("holdings + tradebook for the same stock are one position, not double-counted", () => {
+  // Holdings: RELIANCE 10 @ 2950.5 = 29,505 market value.
+  const HOLDINGS = `Symbol,ISIN,Quantity Available,Average Price,Previous Closing Price
+RELIANCE,INE002A01018,10,2400,2950.5
+`;
+  // Tradebook: the same 10 shares, invested cost 24,000. No market price in a tradebook.
+  const TRADEBOOK = `symbol,isin,trade_type,quantity,price,trade_date,trade_id
+RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1
+`;
+
+  it("net worth = market value regardless of import order", () => {
+    for (const order of [["h", "t"], ["t", "h"]] as const) {
+      const store = new Store();
+      for (const step of order) {
+        if (step === "h") processParseResult(store, parseZerodhaHoldings(HOLDINGS));
+        else processParseResult(store, parseZerodhaTradebook(TRADEBOOK));
+      }
+      const rowsForReliance = store.holdings.length;
+      const s = summary(store);
+      expect(rowsForReliance).toBe(1);           // one position, not two
+      expect(s.net_worth).toBeCloseTo(29505, 0); // market value, NOT 29505 + 24000
+      // cost basis from the tradebook is preserved for P&L
+      const h = store.holdings[0];
+      expect(h.invested_value).toBeCloseTo(24000, 0);
+    }
   });
 });

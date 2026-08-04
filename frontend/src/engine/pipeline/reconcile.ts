@@ -3,6 +3,7 @@
 import { Store } from "../store/store";
 import { Account, Instrument } from "../store/model";
 import { ParsedHolding } from "../parse/types";
+import { Source } from "../taxonomy";
 
 export function findOrCreateAccount(store: Store, h: ParsedHolding): Account {
   const identifier = h.account_identifier ?? null;
@@ -66,16 +67,29 @@ export function findOrCreateInstrument(store: Store, h: ParsedHolding): [Instrum
 export function upsertHolding(
   store: Store, account: Account, instrument: Instrument, h: ParsedHolding, importId: number | null
 ): "created" | "duplicate" {
+  // A position is identified by (account, instrument) — NOT by source. Otherwise the same stock
+  // from a Holdings file and a Tradebook would become two rows and be counted twice (the tradebook
+  // row, lacking a market price, adds its invested cost on top of the market value).
   const existing = store.holdings.find(
-    (x) => x.account_id === account.id && x.instrument_id === instrument.id && x.source === h.source
+    (x) => x.account_id === account.id && x.instrument_id === instrument.id
   );
   if (existing) {
-    existing.quantity = h.quantity;
-    existing.avg_cost = h.avg_cost ?? null;
-    existing.invested_value = h.invested_value ?? null;
-    existing.current_value = h.current_value ?? null;
-    existing.last_price = h.last_price ?? null;
-    existing.folio = h.folio ?? null;
+    // A tradebook has no market price, so it must never overwrite a priced snapshot's value/qty;
+    // it only enriches cost basis (and supplies qty when no snapshot has priced the position).
+    const isTradebook = h.source === Source.ZERODHA_TRADEBOOK;
+    if (!isTradebook) {
+      existing.quantity = h.quantity;
+      existing.current_value = h.current_value ?? existing.current_value;
+      existing.last_price = h.last_price ?? existing.last_price;
+      existing.avg_cost = h.avg_cost ?? existing.avg_cost;
+      existing.invested_value = h.invested_value ?? existing.invested_value;
+      existing.folio = h.folio ?? existing.folio;
+      existing.source = h.source;
+    } else {
+      if (existing.current_value == null) existing.quantity = h.quantity;
+      existing.avg_cost = existing.avg_cost ?? h.avg_cost;
+      existing.invested_value = existing.invested_value ?? h.invested_value;
+    }
     existing.import_id = importId;
     return "duplicate";
   }

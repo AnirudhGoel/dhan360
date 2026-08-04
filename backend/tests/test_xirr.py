@@ -120,3 +120,29 @@ def test_mf_period_xirr_with_injected_nav(db):
     assert res.end_value == 13000.0
     assert res.xirr is not None and res.xirr > 0.3  # ~46% period, annualized higher
     assert res.flags.price_return_only is False  # MF, no equity-dividend caveat
+
+
+@pytest.mark.parametrize("order", [("h", "t"), ("t", "h")])
+def test_holdings_and_tradebook_not_double_counted(db, order):
+    session, models = db
+    from app.parsers import zerodha_holdings, zerodha_tradebook
+    from app.services.import_service import process_parse_result
+
+    holdings_csv = (
+        "Symbol,ISIN,Quantity Available,Average Price,Previous Closing Price\n"
+        "RELIANCE,INE002A01018,10,2400,2950.5\n"
+    )
+    tradebook_csv = (
+        "symbol,isin,trade_type,quantity,price,trade_date,trade_id\n"
+        "RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1\n"
+    )
+
+    for step in order:
+        parsed = zerodha_holdings.parse(holdings_csv) if step == "h" else zerodha_tradebook.parse(tradebook_csv)
+        process_parse_result(session, parsed)
+        session.commit()
+
+    holdings = session.query(models.Holding).all()
+    assert len(holdings) == 1, f"expected one position, got {len(holdings)} (order={order})"
+    assert abs(holdings[0].current_value - 29505.0) < 1  # market value, NOT 29505 + 24000
+    assert abs(holdings[0].invested_value - 24000.0) < 1  # cost basis preserved for P&L
