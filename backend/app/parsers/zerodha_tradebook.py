@@ -16,9 +16,12 @@ from app.parsers.cas_json import _parse_date
 from app.parsers.csv_utils import find_col, sniff_rows, to_float
 
 
-def parse(content: str, file_name: str | None = None, account_name: str = "Zerodha") -> ParseResult:
+def parse(content: str | list[str], file_name: str | None = None, account_name: str = "Zerodha") -> ParseResult:
     result = ParseResult(source=Source.ZERODHA_TRADEBOOK, file_name=file_name)
-    rows = sniff_rows(content)
+    contents = content if isinstance(content, list) else [content]
+    rows: list[dict] = []
+    for c in contents:
+        rows.extend(sniff_rows(c))
     if not rows:
         result.error("No data rows found in file.")
         return result
@@ -30,16 +33,36 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Zerod
     c_qty = find_col(headers, "quantity", "qty")
     c_price = find_col(headers, "price", "tradeprice", "avgprice")
     c_date = find_col(headers, "tradedate", "date", "orderexecutiontime", "orderdate")
+    c_trade_id = find_col(headers, "tradeid", "orderid")
 
     if not (c_symbol and c_type and c_qty and c_price):
         result.error("Tradebook missing required columns (symbol/type/quantity/price).")
         return result
 
+    # De-duplicate trades across (possibly overlapping) yearly files by trade id, else a composite.
+    seen: set[str] = set()
+    dupes = 0
+    unique_rows: list[dict] = []
+    for row in rows:
+        trade_id = (row.get(c_trade_id) or "").strip() if c_trade_id else ""
+        if trade_id:
+            key = f"id:{trade_id}"
+        else:
+            key = "|".join([
+                (row.get(c_symbol) or "").upper(), row.get(c_date) or "" if c_date else "",
+                (row.get(c_type) or "").lower(), str(row.get(c_qty)), str(row.get(c_price)),
+            ])
+        if key in seen:
+            dupes += 1
+            continue
+        seen.add(key)
+        unique_rows.append(row)
+
     # Aggregate: track net qty and total buy cost/qty for weighted average, plus dated trades.
     agg: dict[str, dict] = defaultdict(
         lambda: {"isin": None, "net_qty": 0.0, "buy_qty": 0.0, "buy_cost": 0.0, "txns": []}
     )
-    for row in rows:
+    for row in unique_rows:
         symbol = (row.get(c_symbol) or "").strip().upper()
         if not symbol:
             continue
@@ -86,5 +109,8 @@ def parse(content: str, file_name: str | None = None, account_name: str = "Zerod
             )
         )
 
+    if len(contents) > 1 or dupes:
+        suffix = f", {dupes} duplicate row(s) skipped" if dupes else ""
+        result.info(f"Combined {len(contents)} file(s): {len(unique_rows)} unique trades{suffix}.")
     result.info(f"Aggregated {len(result.holdings)} open positions from tradebook.")
     return result

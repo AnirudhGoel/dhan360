@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -21,6 +23,23 @@ _CSV_PARSERS = {
     "zerodha_tradebook": zerodha_tradebook.parse,
     "generic_csv": generic_csv.parse,
 }
+
+
+def _to_csv_text(raw: bytes, filename: str) -> str:
+    """Decode an upload to CSV text — converting .xlsx/.xls via openpyxl so users needn't."""
+    if filename.lower().endswith((".xlsx", ".xls")):
+        from openpyxl import load_workbook  # lazy: only needed for spreadsheet uploads
+
+        wb = load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+        ws = wb.active
+        if ws is None:
+            return ""
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        for row in ws.iter_rows(values_only=True):
+            writer.writerow(["" if c is None else c for c in row])
+        return buf.getvalue()
+    return raw.decode("utf-8-sig", errors="replace")
 
 
 def _serialize_batch(b: ImportBatch) -> dict:
@@ -45,11 +64,15 @@ async def upload(
     source: str = Form(...),
     account_name: str | None = Form(None),
     password: str | None = Form(None),
-    file: UploadFile = File(...),
+    file: list[UploadFile] = File(...),
     db: Session = Depends(get_session),
 ) -> dict:
-    raw = await file.read()
-    fname = file.filename or source
+    if not file:
+        raise HTTPException(400, "No file uploaded.")
+    first = file[0]
+    raw = await first.read()
+    fname = first.filename or source
+    kwargs = {"account_name": account_name} if account_name else {}
 
     if source == "cas_pdf":
         result = cas_pdf.parse_bytes(raw, password or "", file_name=fname)
@@ -59,10 +82,15 @@ async def upload(
         except (ValueError, UnicodeDecodeError) as exc:
             raise HTTPException(400, f"Invalid JSON: {exc}") from exc
         result = cas_json.parse_dict(data, file_name=fname)
+    elif source == "zerodha_tradebook":
+        # Several yearly exports may be selected at once — combine and de-duplicate them.
+        contents = [_to_csv_text(raw, fname)]
+        for extra in file[1:]:
+            contents.append(_to_csv_text(await extra.read(), extra.filename or source))
+        name = f"{len(file)} tradebook files" if len(file) > 1 else fname
+        result = zerodha_tradebook.parse(contents, file_name=name, **kwargs)
     elif source in _CSV_PARSERS:
-        text = raw.decode("utf-8-sig", errors="replace")
-        kwargs = {"account_name": account_name} if account_name else {}
-        result = _CSV_PARSERS[source](text, file_name=fname, **kwargs)
+        result = _CSV_PARSERS[source](_to_csv_text(raw, fname), file_name=fname, **kwargs)
     else:
         raise HTTPException(400, f"Unknown source '{source}'.")
 

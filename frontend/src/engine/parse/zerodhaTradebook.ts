@@ -5,9 +5,14 @@ import { InstrumentType, Source } from "../taxonomy";
 import { ParsedTxn, ParseResult, holding } from "./types";
 import { findCol, parseDate, round2, sniffRows, toFloat } from "./csv";
 
-export function parseZerodhaTradebook(content: string, fileName: string | null = null, accountName = "Zerodha"): ParseResult {
+// Accepts one file's content or several (Zerodha caps each tradebook export at ~1 year, so a
+// multi-year investor has one file per year). Overlapping/re-picked files are de-duplicated by
+// trade id (falling back to a symbol+date+type+qty+price composite) so trades aren't double-counted.
+export function parseZerodhaTradebook(content: string | string[], fileName: string | null = null, accountName = "Zerodha"): ParseResult {
   const result = new ParseResult(Source.ZERODHA_TRADEBOOK, fileName);
-  const rows = sniffRows(content);
+  const contents = Array.isArray(content) ? content : [content];
+  const rows: Record<string, string>[] = [];
+  for (const c of contents) rows.push(...sniffRows(c));
   if (!rows.length) {
     result.error("No data rows found in file.");
     return result;
@@ -19,11 +24,25 @@ export function parseZerodhaTradebook(content: string, fileName: string | null =
   const cQty = findCol(h, "quantity", "qty");
   const cPrice = findCol(h, "price", "tradeprice", "avgprice");
   const cDate = findCol(h, "tradedate", "date", "orderexecutiontime", "orderdate");
+  const cTradeId = findCol(h, "tradeid", "orderid");
 
   if (!(cSymbol && cType && cQty && cPrice)) {
     result.error("Tradebook missing required columns (symbol/type/quantity/price).");
     return result;
   }
+
+  // De-duplicate trades across files before aggregating.
+  const seen = new Set<string>();
+  let dupes = 0;
+  const uniqueRows = rows.filter((row) => {
+    const id = cTradeId ? (row[cTradeId] || "").trim() : "";
+    const key = id
+      ? `id:${id}`
+      : `${(row[cSymbol] || "").toUpperCase()}|${cDate ? row[cDate] : ""}|${(row[cType] || "").toLowerCase()}|${row[cQty]}|${row[cPrice]}`;
+    if (seen.has(key)) { dupes++; return false; }
+    seen.add(key);
+    return true;
+  });
 
   type Agg = { isin: string | null; net: number; buyQty: number; buyCost: number; txns: ParsedTxn[] };
   const agg = new Map<string, Agg>();
@@ -32,7 +51,7 @@ export function parseZerodhaTradebook(content: string, fileName: string | null =
     return agg.get(s)!;
   };
 
-  for (const row of rows) {
+  for (const row of uniqueRows) {
     const symbol = (row[cSymbol] || "").trim().toUpperCase();
     if (!symbol) continue;
     const qty = toFloat(row[cQty]) || 0;
@@ -72,6 +91,9 @@ export function parseZerodhaTradebook(content: string, fileName: string | null =
       transactions: rec.txns.slice().sort((a, b) => (a.date < b.date ? -1 : 1)),
       raw: { derived_from: "tradebook" },
     }));
+  }
+  if (contents.length > 1 || dupes) {
+    result.info(`Combined ${contents.length} file(s): ${uniqueRows.length} unique trades${dupes ? `, ${dupes} duplicate row(s) skipped` : ""}.`);
   }
   result.info(`Aggregated ${result.holdings.length} open positions from tradebook.`);
   return result;

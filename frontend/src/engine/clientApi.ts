@@ -52,6 +52,18 @@ async function persist(): Promise<void> {
   try { await saveSnapshot(store); } catch { /* storage may be blocked; keep in-memory */ }
 }
 
+// Read a file to CSV text. .xlsx/.xls are converted to CSV via SheetJS, lazy-loaded so the
+// (sizeable) library is only fetched when someone actually picks a spreadsheet.
+async function fileToText(file: File): Promise<string> {
+  if (/\.xlsx?$/i.test(file.name)) {
+    const XLSX = await import("xlsx");
+    const wb = XLSX.read(await file.arrayBuffer(), { type: "array" });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    return sheet ? XLSX.utils.sheet_to_csv(sheet) : "";
+  }
+  return file.text();
+}
+
 function serializeXirr(r: any): any {
   return {
     label: r.label,
@@ -153,22 +165,27 @@ export const clientApi = {
     await init();
     const source = String(form.get("source"));
     const accountName = (form.get("account_name") as string) || undefined;
-    const file = form.get("file") as File;
-    const text = await file.text();
+    const files = form.getAll("file").filter((f): f is File => f instanceof File);
+    if (!files.length) throw new Error("Choose a file first.");
+    const file = files[0];
 
     // Historical prices don't create holdings — they fill the price cache for period XIRR/perf.
     if (source === "prices_csv") {
-      importPriceCsv(store, text, file.name);
+      importPriceCsv(store, await fileToText(file), file.name);
       await persist();
       const batch = store.imports[store.imports.length - 1];
       return { ...batch, diagnostics: batch.diagnostics ? JSON.parse(batch.diagnostics) : [] };
     }
 
     let result;
-    if (source === "cas_json") result = parseCasJson(JSON.parse(text), file.name);
-    else if (source === "zerodha_holdings") result = parseZerodhaHoldings(text, file.name, accountName);
-    else if (source === "zerodha_tradebook") result = parseZerodhaTradebook(text, file.name, accountName);
-    else if (source === "generic_csv") result = parseGenericCsv(text, file.name, accountName);
+    if (source === "zerodha_tradebook") {
+      // Multiple yearly exports can be selected at once and combined into one position set.
+      const contents = await Promise.all(files.map(fileToText));
+      const name = files.length > 1 ? `${files.length} tradebook files` : file.name;
+      result = parseZerodhaTradebook(contents, name, accountName);
+    } else if (source === "cas_json") result = parseCasJson(JSON.parse(await fileToText(file)), file.name);
+    else if (source === "zerodha_holdings") result = parseZerodhaHoldings(await fileToText(file), file.name, accountName);
+    else if (source === "generic_csv") result = parseGenericCsv(await fileToText(file), file.name, accountName);
     else if (source === "cas_pdf") {
       // The one server call: a stateless parse-cas service turns the PDF into CAS JSON, which we
       // then process locally. Nothing about the PDF is stored. Requires VITE_PARSE_CAS_URL at build.

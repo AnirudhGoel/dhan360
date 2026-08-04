@@ -51,7 +51,7 @@ export default function Imports() {
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [source, setSource] = useState<SourceDef>(ALL_SOURCES[0]);
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [password, setPassword] = useState("");
   const [accountName, setAccountName] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -65,18 +65,18 @@ export default function Imports() {
   };
 
   const doUpload = async () => {
-    if (!file) return setMsg({ kind: "err", text: "Choose a file first." });
+    if (!files.length) return setMsg({ kind: "err", text: "Choose a file first." });
     setBusy("upload");
     setMsg(null);
     try {
       const form = new FormData();
       form.append("source", source.id);
-      form.append("file", file);
+      for (const f of files) form.append("file", f);
       if (password) form.append("password", password);
       if (accountName) form.append("account_name", accountName);
       const res: any = await api.upload(form);
       setMsg({ kind: "ok", text: `Imported ${res.count_imported} (merged ${res.count_merged}, dup ${res.count_duplicate}, skipped ${res.count_skipped}).` });
-      setFile(null);
+      setFiles([]);
       refreshAll();
     } catch (e: any) {
       setMsg({ kind: "err", text: e.message });
@@ -179,13 +179,21 @@ export default function Imports() {
             <div className="border-t border-slate-100 pt-3 space-y-3">
               <p className="text-[11px] text-ink-soft">
                 <span className="font-medium text-ink">{source.label}</span> — {source.hint}
+                {source.accept === ".csv" && <span className="text-ink-mute"> .csv or .xlsx — no need to convert.</span>}
+                {source.id === "zerodha_tradebook" && (
+                  <span className="text-ink-mute"> Zerodha caps each export at ~1 year — select all your yearly files at once; we combine and de-duplicate them.</span>
+                )}
               </p>
               <input
                 type="file"
-                accept={source.accept}
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                accept={source.accept === ".csv" ? ".csv,.xlsx,.xls" : source.accept}
+                multiple={source.id === "zerodha_tradebook"}
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
                 className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm"
               />
+              {files.length > 1 && (
+                <p className="text-[11px] text-brand">{files.length} files selected — they'll be combined.</p>
+              )}
               {source.id === "cas_pdf" && (
                 <input type="password" placeholder="CAS PDF password (usually your PAN)" value={password} onChange={(e) => setPassword(e.target.value)}
                   className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
@@ -195,7 +203,7 @@ export default function Imports() {
                   className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
               )}
               <button className="btn-primary w-full" onClick={doUpload} disabled={!!busy}>
-                {busy === "upload" ? "Importing…" : `Import ${source.label}`}
+                {busy === "upload" ? "Importing…" : files.length > 1 ? `Import ${files.length} files` : `Import ${source.label}`}
               </button>
             </div>
           </div>

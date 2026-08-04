@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import * as XLSX from "xlsx";
 import { parseZerodhaHoldings } from "./zerodhaHoldings";
 import { parseZerodhaTradebook } from "./zerodhaTradebook";
 import { parseGenericCsv } from "./genericCsv";
@@ -58,6 +59,35 @@ describe("parser parity", () => {
     // dated transactions carried through
     expect(rel.transactions.length).toBe(3);
     expect(rel.transactions[0].date).toBe("2023-01-01");
+  });
+
+  it("combines multiple tradebook files and de-dups overlapping trades by trade id", () => {
+    // Two yearly exports that overlap on one trade (same trade_id) — must not double-count.
+    const y1 = `symbol,isin,trade_type,quantity,price,trade_date,trade_id
+RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1
+RELIANCE,INE002A01018,buy,5,2600,2023-06-01,T2
+`;
+    const y2 = `symbol,isin,trade_type,quantity,price,trade_date,trade_id
+RELIANCE,INE002A01018,buy,5,2600,2023-06-01,T2
+RELIANCE,INE002A01018,buy,8,2700,2024-02-01,T3
+`;
+    const res = parseZerodhaTradebook([y1, y2]);
+    const rel = res.holdings.find((x) => x.symbol === "RELIANCE")!;
+    expect(rel.quantity).toBe(23); // 10 + 5 + 8 (the duplicate T2 counted once)
+    expect(rel.transactions.length).toBe(3);
+  });
+
+  it("reads an .xlsx sheet into parser-ready CSV (holdings)", () => {
+    // Mirrors the lazy XLSX.sheet_to_csv step in clientApi.fileToText for .xlsx uploads.
+    const ws = XLSX.utils.aoa_to_sheet([
+      ["Symbol", "ISIN", "Quantity Available", "Average Price", "Previous Closing Price"],
+      ["RELIANCE", "INE002A01018", 10, 2400, 2950.5],
+    ]);
+    const csv = XLSX.utils.sheet_to_csv(ws);
+    const res = parseZerodhaHoldings(csv, "holdings.xlsx");
+    const rel = res.holdings.find((x) => x.symbol === "RELIANCE")!;
+    expect(rel.quantity).toBe(10);
+    expect(rel.current_value).toBe(29505);
   });
 
   it("generic csv with asset_class hint + dates", () => {

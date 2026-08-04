@@ -9,6 +9,8 @@ On the **Data & Imports** page the sources are grouped by what you have — **St
 **Mutual funds**, and **Everything else** (manual) — with the CAS-JSON and price-CSV options behind
 "Show advanced". The sections below list every format.
 
+> **.xlsx works too.** Any CSV source also accepts **.xlsx / .xls** — the first sheet is read for you, no need to convert. (Zerodha's *Kite web* holdings download is CSV; *Console* often gives .xlsx.)
+
 ## Zerodha Holdings CSV (`zerodha_holdings`)
 
 From Console → Portfolio → Holdings (or a Kite holdings export). Recognized columns (any subset):
@@ -26,6 +28,8 @@ Previous Closing Price / LTP, Current Value, Buy Value
 A list of individual trades. Required columns: `symbol`, `isin`, `trade_type` (buy/sell), `quantity`, `price`. The parser aggregates to **net open positions** with a buy-weighted average cost, and keeps the dated trades as **transactions** that feed **XIRR** and the performance curve. Current value is unknown from a tradebook alone (no live price) and stays blank until a holdings import or a price source fills it.
 
 > **Holdings vs Tradebook:** they're complementary. Holdings gives current value & allocation but no dates; the tradebook gives dated cashflows (→ XIRR) but no current value. **Import both** for the full picture — they reconcile onto the same instruments.
+
+**Multiple files at once:** Zerodha caps each tradebook export at ~1 year, so a multi-year investor has one file per year. Select them **all together** — they're combined into one position set and **de-duplicated by trade id** (falling back to symbol+date+type+qty+price), so overlapping windows never double-count.
 
 ## Mutual fund CAS — PDF (`cas_pdf`)
 

@@ -70,6 +70,44 @@ def test_zerodha_tradebook_aggregates_net_position():
     assert any(h.symbol == "INFY" for h in res.holdings)
 
 
+def test_zerodha_tradebook_combines_files_and_dedups_by_trade_id():
+    y1 = (
+        "symbol,isin,trade_type,quantity,price,trade_date,trade_id\n"
+        "RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1\n"
+        "RELIANCE,INE002A01018,buy,5,2600,2023-06-01,T2\n"
+    )
+    y2 = (
+        "symbol,isin,trade_type,quantity,price,trade_date,trade_id\n"
+        "RELIANCE,INE002A01018,buy,5,2600,2023-06-01,T2\n"  # overlaps y1 — must be skipped
+        "RELIANCE,INE002A01018,buy,8,2700,2024-02-01,T3\n"
+    )
+    res = zerodha_tradebook.parse([y1, y2])
+    rel = next(h for h in res.holdings if h.symbol == "RELIANCE")
+    assert rel.quantity == 23  # 10 + 5 + 8 (duplicate T2 counted once)
+    assert len(rel.transactions) == 3
+
+
+def test_xlsx_upload_converts_to_csv():
+    import io
+
+    from openpyxl import Workbook
+
+    from app.api.imports import _to_csv_text
+
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["Symbol", "ISIN", "Quantity Available", "Average Price", "Previous Closing Price"])
+    ws.append(["RELIANCE", "INE002A01018", 10, 2400, 2950.5])
+    buf = io.BytesIO()
+    wb.save(buf)
+
+    csv_text = _to_csv_text(buf.getvalue(), "holdings.xlsx")
+    res = zerodha_holdings.parse(csv_text)
+    rel = next(h for h in res.holdings if h.symbol == "RELIANCE")
+    assert rel.quantity == 10
+    assert rel.current_value == 29505.0  # 10 * 2950.5
+
+
 def test_generic_csv_with_asset_class_hint():
     res = generic_csv.parse(GENERIC_CSV)
     assert len(res.holdings) == 3
