@@ -1,9 +1,12 @@
 # Python
 backend/.venv/
+services/*/.venv/
+.venv/
 __pycache__/
 *.pyc
 .pytest_cache/
 *.egg-info/
+services/*/.env
 
 # Local data — NEVER commit a user's financial data.
 # Anchor to the runtime SQLite dirs only (a bare `data/` also matched

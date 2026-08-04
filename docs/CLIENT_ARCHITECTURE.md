@@ -57,14 +57,28 @@ The plan (not yet wired): a **stateless, ephemeral `parse-cas` microservice** th
 with an "Advanced: parse locally, upload JSON" escape hatch for purists. CSV + CAS-**JSON** + manual
 imports are fully client-side today.
 
+## Equity prices (the second, optional carve-out)
+
+For direct stocks/ETFs, **period** XIRR and the performance curve need historical closes. Kite is the
+natural source, but it can't be called from the browser: the `api_secret` must stay server-side and
+Kite's endpoints don't send CORS headers. So there's a small self-run **`kite-prices` proxy** that
+holds the Kite session (a token you refresh with a daily login) and exposes `POST /prices`.
+
+Privacy stays intact: only **symbols + a date range** leave the browser (never holdings or amounts),
+the proxy is **yours** (your creds, your box), and it stores nothing. If `VITE_KITE_PRICES_URL` is
+unset the client simply falls back to the price-CSV path and flags equity — no feature breaks. See
+[`services/kite-prices/README.md`](../services/kite-prices/README.md).
+
 ## Status / roadmap
 
 - ✅ Phase 1 — client engine (parse/classify/aggregate/XIRR/performance), local store, backup, wiring.
 - ✅ `parse-cas` microservice for client-side CAS PDF (`services/parse-cas`; set `VITE_PARSE_CAS_URL`).
 - ✅ Deploy the client build to dhan360.in (Pages workflow builds `build:client`).
 - ✅ Direct-equity **period** XIRR/perf via a **historical-price CSV import** (fills the price cache).
-- ⬜ *Automate* the equity price feed (e.g. a Kite provider that produces those price points) — needs
-  the user's Kite API access. The client price-cache plumbing is already in place.
+- ✅ *Automated* equity price feed — a self-run **`kite-prices` proxy** (`services/kite-prices`; set
+  `VITE_KITE_PRICES_URL`) that holds the Kite session server-side and returns daily closes. The client
+  (`engine/kitePrices.ts`) sends only symbols + a date range and fills the local price cache, so
+  direct-equity period XIRR needs no manual CSV. See [`services/kite-prices/README.md`](../services/kite-prices/README.md).
 - ⬜ Combined (equity + MF) performance curve + Nifty benchmark overlay.
 - ⬜ Optional end-to-end-encrypted sync (server stores ciphertext only) for cross-device — a separate
   project (key management from a passphrase + a tiny blob-storage endpoint).

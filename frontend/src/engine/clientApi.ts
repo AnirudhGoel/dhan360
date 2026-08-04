@@ -20,6 +20,7 @@ import { rebalancePlan } from "./portfolio/rebalance";
 import { portfolioXirr } from "./portfolio/xirr";
 import { mfPerformanceCurve } from "./portfolio/performance";
 import { populateBoundaryPrices } from "./prices";
+import { populateEquityBoundaryPrices } from "./kitePrices";
 import { ASSET_CLASS_ORDER, DebtSubClass, EquitySubClass, GoldSubClass, InstrumentType } from "./taxonomy";
 
 const store = new Store();
@@ -79,12 +80,25 @@ export const clientApi = {
 
   async xirr(scope: string, from?: string, to?: string) {
     await init();
-    if (from && to) await populateBoundaryPrices(store, [from, to]);
+    let equityNote = "";
+    if (from && to) {
+      const [, kite] = await Promise.all([
+        populateBoundaryPrices(store, [from, to]),
+        populateEquityBoundaryPrices(store, [from, to]),
+      ]);
+      if (!kite.configured) {
+        equityNote = " Direct-equity period boundaries need a price feed: configure a Kite price proxy (VITE_KITE_PRICES_URL) or import a price CSV. Until then equity is flagged and excluded from period boundaries.";
+      } else if (kite.needsAuth) {
+        equityNote = " The Kite price proxy isn't logged in (its access token expires daily) — reconnect it, then reload. Equity boundaries are excluded until then.";
+      } else if (kite.missing.length) {
+        equityNote = ` Kite priced ${kite.fetched} equity symbol(s); ${kite.missing.length} could not be resolved (${kite.missing.slice(0, 6).join(", ")}${kite.missing.length > 6 ? "…" : ""}) and are excluded from period boundaries.`;
+      }
+    }
     const results = portfolioXirr(store, from ?? null, to ?? null, scope);
     return {
       scope, from: from ?? null, to: to ?? null, is_period: !!from,
       results: results.map(serializeXirr),
-      note: "Mutual-fund XIRR uses actual NAV. Direct-equity period XIRR needs a price feed (Kite) — until then, equity holdings without cached historical prices are flagged and excluded from period boundaries. Equity figures are price-return (dividends not yet included).",
+      note: "Mutual-fund XIRR uses actual NAV. Equity figures are price-return (dividends not yet included)." + equityNote,
     };
   },
 
