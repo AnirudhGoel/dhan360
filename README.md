@@ -131,14 +131,15 @@ Sample/anonymized files live in [`samples/`](samples/). See [docs/IMPORT_FORMATS
 - [Classification methodology](docs/CLASSIFICATION.md) — how buckets, look-through and confidence work.
 - [Import formats](docs/IMPORT_FORMATS.md) — supported files & the generic CSV template.
 - [Limitations](docs/LIMITATIONS.md) — what's approximate, what's missing.
-- [Roadmap](docs/ROADMAP.md) — PDF brokers, Groww/Kuvera/INDmoney, live prices, XIRR…
+- [Roadmap](docs/ROADMAP.md) — combined equity+MF curve, demat CAS, disclosed look-through, more brokers…
 - [Contributing](CONTRIBUTING.md) — add a parser or extend reference data.
 
 ## Privacy
 
-- All data lives in a local SQLite file (`DHAN360_DATA_DIR`, default `./data`). **Nothing is uploaded anywhere.**
-- PDFs/CSVs are parsed by the backend process **you** run.
-- `Data & Imports → Reset` wipes everything instantly.
+- Your data stays on your device — in the **browser** (IndexedDB) at [dhan360.in](https://dhan360.in), or in a local **SQLite** file (`DHAN360_DATA_DIR`, default `./data`) when self-hosted. **Nothing is uploaded anywhere.**
+- PDFs/CSVs are parsed locally — in your browser, or by the backend process **you** run.
+- The only optional network calls are non-sensitive lookups you control: mutual-fund NAV from mfapi.in, and (if you enable them) the stateless `parse-cas` and self-run `kite-prices` helpers — which receive scheme codes / symbols, never your holdings.
+- `Data & Imports → Reset` wipes everything instantly; **Reports → Backup** exports a portable JSON.
 
 ## Licensing & hosted edition
 

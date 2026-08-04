@@ -1,25 +1,37 @@
 # Limitations & honesty notes
 
-dhan360 favours transparency over false precision. Known limitations in this MVP:
+dhan360 favours transparency over false precision. Known limitations, kept current:
 
 ## Prices
-- **No live prices.** Values come from the imported statement (CAS NAV, broker LTP/close) or your manual entry. There is no market-data feed yet, so values reflect the as-of date of your import. A tradebook-only import has no current value until reconciled with a holdings import. *(Roadmap: optional AMFI NAV + quote refresh.)*
+- **No live/real-time quotes.** Values come from your imports or an as-of price source, not a streaming feed:
+  - **Mutual funds** use actual NAV — from the statement, and (for period XIRR & the performance curve) fetched client-side from [mfapi.in](https://mfapi.in) by scheme code.
+  - **Direct stocks/ETFs** use the broker **LTP/close** in your holdings file for current value. For **period** XIRR and the return curve they need *historical* closes, sourced from either the **Kite price proxy** (`services/kite-prices`) or a **historical-prices CSV** import.
+- A **tradebook-only** import has **no current value** until it's reconciled with a holdings import or a price source.
+- The **Kite feed** is opt-in and self-run: it needs your own Kite Connect app **with the Historical Data subscription**, and a **daily login** (the access token expires ~6 a.m.). Without it, equity period boundaries fall back to the price-CSV path and are flagged.
+
+## XIRR & returns
+- **XIRR is computed** — a whole-portfolio/lifetime figure plus a configurable **period** XIRR — using your transaction history (tradebook / CAS) and boundary valuations, via a Newton + bisection solver.
+- It's **honest about coverage.** Each result carries flags and a coverage %: `price_return_only` (equity dividends not included), `has_estimated_price` (a boundary price was missing/estimated), `split_flagged`, `insufficient_data`. Holdings we can't value at a boundary are excluded, not guessed.
+- **Direct-equity returns are price-return only** — dividends aren't included yet.
+- **Corporate actions:** the self-host backend does split-aware quantity reconstruction; the **client store (v1) omits corporate actions** — fine for typical data, and flagged where it matters.
+- The **performance curve is mutual-fund-based** today (unitized, time-weighted — the Zerodha Console method). A **combined equity + MF** curve and a Nifty benchmark overlay are on the roadmap.
 
 ## Classification
-- **Reference data is a bundled snapshot**, not exhaustive. The stock cap/sector list, ETF map and AMFI scheme set cover common instruments; unknown ones fall back to heuristics or `Unclassified` (shown honestly). Extend the JSON in `backend/app/refdata/data/` or set overrides.
-- **Mutual-fund look-through is mostly *estimated*** from SEBI category models, not live disclosures. Estimated splits are flagged in the UI and excluded from overlap. Only funds with *disclosed* portfolios (seeded, or via a future disclosure parser) contribute to concentration/overlap with real constituent names.
-- **EPF** is bucketed under Debt/PPF for simplicity. **NPS** is treated as Debt by default; if your NPS has an equity portion, add it as a separate manual equity entry.
+- **Reference data is a bundled snapshot**, not exhaustive. The stock cap/sector list, ETF map and AMFI scheme set cover common instruments; unknown ones fall back to heuristics or an honest `Unclassified`. Extend the JSON (`backend/app/refdata/data/` and `frontend/src/engine/data/`) or set overrides.
+- **Mutual-fund look-through is mostly *estimated*** from SEBI category models, not live disclosures. Estimated splits are flagged in the UI and excluded from overlap; only *disclosed* portfolios contribute real constituent names to concentration/overlap.
+- **EPF** is bucketed under Debt for simplicity. **NPS** is treated as Debt by default; if your NPS has an equity portion, add it as a separate manual equity entry.
 - Cap convention is the AMFI top-100/250 rule; it won't perfectly match a fund's own mandate on any given day.
 
-## XIRR, capital gains & tax
-- **No XIRR yet** (needs full cashflow/transaction history; CAS transactions are captured but not yet used for XIRR).
-- **No real capital-gains / tax computation.** Rebalancing shows *generic, non-personalized* tax & exit-load reminders only. The Reports page has capital-gains/XIRR placeholders.
+## Capital gains & tax
+- **No real capital-gains / tax computation.** Rebalancing shows *generic, non-personalized* tax & exit-load reminders only. Verify holding periods, exit loads and tax treatment yourself before acting.
 
 ## Scope
-- **No broker login automation** — file-based imports only (by design, for privacy).
+- **File-based imports only** — no broker-login automation, by design (for privacy).
+- **Zerodha is the only first-class broker.** Other brokers import via the **Generic CSV** template.
+- **No stock/ETF depository CAS (NSDL/CDSL).** `casparser` targets the CAMS/KFintech **mutual-fund** CAS; the depository e-CAS is a different, messier format with weaker cost/transaction data than a broker CSV — so equities come via a broker CSV or the generic template. (Multi-broker equity consolidation from an e-CAS is a possible future addition.)
+- **PDF CAS** relies on `casparser`; unusual/older layouts may fail — fall back to the casparser **JSON** path.
 - **No order execution / robo-advisory.** Analytics & visibility only.
-- **Family/multi-member portfolios** — schema is member-aware-ready but the UI is single-portfolio in this MVP.
-- **PDF CAS** relies on `casparser`; unusual/older layouts may fail — fall back to the casparser JSON path.
+- **Family/multi-member portfolios** — the schema is member-aware-ready, but the UI is single-portfolio in this MVP.
 
 ## Not advice
-dhan360 is an analytics tool. Nothing in it is personalized investment, tax, or legal advice. Verify holding periods, exit loads and tax treatment before acting.
+dhan360 is an analytics tool. Nothing in it is personalized investment, tax, or legal advice.

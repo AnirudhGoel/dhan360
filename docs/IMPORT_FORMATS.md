@@ -1,6 +1,13 @@
 # Import formats
 
-All parsing happens locally. Each source maps to a parser in `backend/app/parsers/`. Column matching is **fuzzy** (case/spacing-insensitive, substring-aware), so minor export variations work. Sample files are in [`../samples/`](../samples/).
+All parsing happens locally — in the self-host backend (`backend/app/parsers/`) or, for the
+browser app, the mirrored TypeScript engine (`frontend/src/engine/parse/`). Column matching is
+**fuzzy** (case/spacing-insensitive, substring-aware), so minor export variations work. Sample
+files are in [`../samples/`](../samples/).
+
+On the **Data & Imports** page the sources are grouped by what you have — **Stocks & ETFs**,
+**Mutual funds**, and **Everything else** (manual) — with the CAS-JSON and price-CSV options behind
+"Show advanced". The sections below list every format.
 
 ## Zerodha Holdings CSV (`zerodha_holdings`)
 
@@ -16,7 +23,9 @@ Previous Closing Price / LTP, Current Value, Buy Value
 
 ## Zerodha Tradebook CSV (`zerodha_tradebook`)
 
-A list of individual trades. Required columns: `symbol`, `isin`, `trade_type` (buy/sell), `quantity`, `price`. The parser aggregates to **net open positions** with a buy-weighted average cost. Current value is unknown from a tradebook alone (no live price) and is left blank until a holdings import or price refresh fills it.
+A list of individual trades. Required columns: `symbol`, `isin`, `trade_type` (buy/sell), `quantity`, `price`. The parser aggregates to **net open positions** with a buy-weighted average cost, and keeps the dated trades as **transactions** that feed **XIRR** and the performance curve. Current value is unknown from a tradebook alone (no live price) and stays blank until a holdings import or a price source fills it.
+
+> **Holdings vs Tradebook:** they're complementary. Holdings gives current value & allocation but no dates; the tradebook gives dated cashflows (→ XIRR) but no current value. **Import both** for the full picture — they reconcile onto the same instruments.
 
 ## Mutual fund CAS — PDF (`cas_pdf`)
 
@@ -45,6 +54,24 @@ My PPF Account,ppf,,,,,,700000,850000,,,,,Debt
 
 - `type` ∈ `stock, etf, mutual_fund, sgb, bond, gsec, fd, ppf, epf, nps, reit, invit, cash, digital_gold, real_estate, other` (defaults to `other`).
 - `asset_class` is an optional explicit override applied during classification.
+
+## Historical prices CSV (`prices_csv`) — advanced
+
+Fills the local price cache so **direct-equity period XIRR** and the performance curve have boundary prices. It creates **no holdings**. Header row (case-insensitive); needs `date`, a `close` price, and `symbol` **or** `isin`:
+
+```csv
+symbol,isin,date,close
+RELIANCE,INE002A01018,2024-04-01,2925.50
+RELIANCE,INE002A01018,2025-03-31,1204.70
+```
+
+Accepted aliases: price column ∈ `close / closeprice / price / nav / ltp`; symbol ∈ `symbol / ticker / tradingsymbol`; date ∈ `date / tradedate`. Rows are matched to instruments by symbol or ISIN.
+
+> Most users won't need this: the **Kite price feed** below fetches these closes automatically. Mutual-fund NAV is fetched automatically too (client-side from [mfapi.in](https://mfapi.in)); this CSV is only for direct equity when you're not running the Kite proxy.
+
+## Automated equity prices — Kite feed (optional)
+
+Instead of a price CSV, run the self-hosted **`kite-prices` proxy** (`services/kite-prices`) with your own Kite Connect app (Historical Data subscription) and point the client at it via `VITE_KITE_PRICES_URL`. Period XIRR then pulls direct-equity closes automatically — only symbols + a date range leave the browser, never holdings. See [`../services/kite-prices/README.md`](../services/kite-prices/README.md).
 
 ## Manual entries (`manual`)
 
