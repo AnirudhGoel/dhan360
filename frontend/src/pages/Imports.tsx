@@ -4,14 +4,45 @@ import { api } from "../lib/api";
 import { Card, Loading, PageHeader } from "../components/Common";
 import { DEMO, REPO_URL } from "../lib/demo";
 
-const SOURCES = [
-  { id: "zerodha_holdings", label: "Zerodha Holdings CSV", accept: ".csv" },
-  { id: "zerodha_tradebook", label: "Zerodha Tradebook CSV", accept: ".csv" },
-  { id: "cas_json", label: "CAS JSON (casparser)", accept: ".json" },
-  { id: "cas_pdf", label: "CAS PDF (CAMS/KFintech)", accept: ".pdf" },
-  { id: "generic_csv", label: "Generic CSV template", accept: ".csv" },
-  { id: "prices_csv", label: "Historical prices CSV", accept: ".csv" },
+interface SourceDef { id: string; label: string; accept: string; hint: string; advanced?: boolean }
+interface SourceGroup { key: string; title: string; blurb?: string; sources: SourceDef[] }
+
+// Grouped by "what do you have", with plain-English hints for what each file unlocks.
+const SOURCE_GROUPS: SourceGroup[] = [
+  {
+    key: "equity",
+    title: "Stocks & ETFs",
+    blurb: "From Zerodha Console. Using another broker? Use the Generic CSV.",
+    sources: [
+      { id: "zerodha_holdings", label: "Zerodha — Holdings", accept: ".csv",
+        hint: "Your current positions & value → powers allocation, net worth and P&L. (Console → Portfolio → Holdings.)" },
+      { id: "zerodha_tradebook", label: "Zerodha — Tradebook", accept: ".csv",
+        hint: "Your buy/sell history → unlocks XIRR and the performance curve. Best paired with Holdings. (Console → Reports → Tradebook.)" },
+      { id: "generic_csv", label: "Other broker (Generic CSV)", accept: ".csv",
+        hint: "Any broker or source via a simple column template — see the docs for the format." },
+    ],
+  },
+  {
+    key: "mf",
+    title: "Mutual funds",
+    blurb: "A CAS (Consolidated Account Statement) covers every AMC in one file. Need one? Generate it below.",
+    sources: [
+      { id: "cas_pdf", label: "CAS PDF (CAMS / KFintech)", accept: ".pdf",
+        hint: "Easiest — upload the PDF and we parse it. Enter its password (usually your PAN)." },
+      { id: "cas_json", label: "CAS JSON (parse locally)", accept: ".json", advanced: true,
+        hint: "Max privacy: run casparser on your machine and upload the JSON — the file never leaves your device." },
+    ],
+  },
+  {
+    key: "advanced",
+    title: "Advanced",
+    sources: [
+      { id: "prices_csv", label: "Historical prices CSV", accept: ".csv", advanced: true,
+        hint: "Only needed if you're not using the Kite price feed — fills equity prices so direct-stock period XIRR works." },
+    ],
+  },
 ];
+const ALL_SOURCES: SourceDef[] = SOURCE_GROUPS.flatMap((g) => g.sources);
 
 const MANUAL_TYPES = ["ppf", "epf", "fd", "sgb", "nps", "bond", "gsec", "reit", "invit", "digital_gold", "real_estate", "cash", "other"];
 
@@ -19,10 +50,11 @@ export default function Imports() {
   const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
-  const [source, setSource] = useState(SOURCES[0]);
+  const [source, setSource] = useState<SourceDef>(ALL_SOURCES[0]);
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [accountName, setAccountName] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const historyQ = useQuery({ queryKey: ["imports"], queryFn: api.imports });
 
@@ -102,36 +134,70 @@ export default function Imports() {
         </Card>
       ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <Card title="Upload a statement">
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              {SOURCES.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setSource(s)}
-                  className={`text-left text-sm rounded-lg border px-3 py-2 ${source.id === s.id ? "border-brand bg-brand/5 text-brand" : "border-slate-200 text-ink-soft hover:bg-slate-50"}`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-            <input
-              type="file"
-              accept={source.accept}
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm"
-            />
-            {source.id === "cas_pdf" && (
-              <input type="password" placeholder="CAS PDF password (usually your PAN)" value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
-            )}
-            {source.accept === ".csv" && (
-              <input type="text" placeholder="Account name (optional)" value={accountName} onChange={(e) => setAccountName(e.target.value)}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
-            )}
-            <button className="btn-primary w-full" onClick={doUpload} disabled={!!busy}>
-              {busy === "upload" ? "Importing…" : "Import"}
+        <Card title="Upload a statement" actions={<span className="text-xs text-ink-mute">Stocks · Mutual funds</span>}>
+          <div className="space-y-4">
+            {SOURCE_GROUPS.map((g) => {
+              const visible = g.sources.filter((s) => !s.advanced || showAdvanced);
+              if (!visible.length) return null;
+              return (
+                <div key={g.key}>
+                  <div className="text-xs font-semibold text-ink mb-0.5">{g.title}</div>
+                  {g.blurb && <p className="text-[11px] text-ink-mute mb-2">{g.blurb}</p>}
+                  <div className="grid grid-cols-2 gap-2">
+                    {visible.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => setSource(s)}
+                        className={`text-left text-sm rounded-lg border px-3 py-2 ${source.id === s.id ? "border-brand bg-brand/5 text-brand" : "border-slate-200 text-ink-soft hover:bg-slate-50"}`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                  {g.key === "equity" && (
+                    <p className="mt-2 text-[11px] text-ink-mute bg-slate-50 rounded-lg px-3 py-2 leading-relaxed">
+                      💡 <span className="font-medium">Add both Holdings and Tradebook</span> for the full picture:
+                      Holdings gives your current value &amp; allocation, the Tradebook adds the dated history XIRR needs.
+                      Neither alone covers both.
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((v) => {
+                if (v && source.advanced) setSource(ALL_SOURCES[0]); // don't leave a hidden source selected
+                return !v;
+              })}
+              className="text-[11px] text-ink-soft hover:text-brand underline"
+            >
+              {showAdvanced ? "Hide advanced options" : "Show advanced options (CAS JSON, price CSV)"}
             </button>
+
+            <div className="border-t border-slate-100 pt-3 space-y-3">
+              <p className="text-[11px] text-ink-soft">
+                <span className="font-medium text-ink">{source.label}</span> — {source.hint}
+              </p>
+              <input
+                type="file"
+                accept={source.accept}
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm"
+              />
+              {source.id === "cas_pdf" && (
+                <input type="password" placeholder="CAS PDF password (usually your PAN)" value={password} onChange={(e) => setPassword(e.target.value)}
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
+              )}
+              {source.accept === ".csv" && (
+                <input type="text" placeholder="Account name (optional)" value={accountName} onChange={(e) => setAccountName(e.target.value)}
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
+              )}
+              <button className="btn-primary w-full" onClick={doUpload} disabled={!!busy}>
+                {busy === "upload" ? "Importing…" : `Import ${source.label}`}
+              </button>
+            </div>
           </div>
         </Card>
 
@@ -258,7 +324,10 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
   };
 
   return (
-    <Card title="Add a manual asset (PPF / FD / SGB / NPS / …)">
+    <Card title="Everything else" actions={<span className="text-xs text-ink-mute">PPF · FD · SGB · NPS · gold…</span>}>
+      <p className="text-[11px] text-ink-mute mb-3">
+        Assets with no statement to upload — add them by hand. Type drives classification.
+      </p>
       <div className="space-y-3">
         <input type="text" placeholder="Asset name (e.g. SBI PPF Account)" value={name} onChange={(e) => setName(e.target.value)}
           className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
