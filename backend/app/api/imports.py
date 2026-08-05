@@ -30,7 +30,8 @@ def _to_csv_text(raw: bytes, filename: str) -> str:
     if filename.lower().endswith((".xlsx", ".xls")):
         from openpyxl import load_workbook  # lazy: only needed for spreadsheet uploads
 
-        wb = load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+        # Not read_only: some Console exports report wrong dimensions in read-only mode.
+        wb = load_workbook(io.BytesIO(raw), data_only=True)
         ws = wb.active
         if ws is None:
             return ""

@@ -16,6 +16,9 @@ dhan360 favours transparency over false precision. Known limitations, kept curre
 - **Corporate actions:** the self-host backend does split-aware quantity reconstruction; the **client store (v1) omits corporate actions** — fine for typical data, and flagged where it matters.
 - The **performance curve is mutual-fund-based** today (unitized, time-weighted — the Zerodha Console method). A **combined equity + MF** curve and a Nifty benchmark overlay are on the roadmap.
 
+## Holdings vs tradebook reconciliation
+- **Your holdings file is the source of truth for what you *currently* hold.** A tradebook's "net open position" (buys − sells) is only reliable with *complete* trade history — Zerodha caps exports at ~1 year, and splits/bonuses skew raw share counts. So when a holdings snapshot exists for an account, tradebook positions that **aren't in it** (sold, transferred out, or split-skewed) are **excluded from net worth** — their trades are kept for history, and the import diagnostics tell you how many were excluded. A **tradebook-only** portfolio (no holdings file) keeps its net positions, valued at cost until priced.
+
 ## Classification
 - **Reference data is a bundled snapshot**, not exhaustive. The stock cap/sector list, ETF map and AMFI scheme set cover common instruments; unknown ones fall back to heuristics or an honest `Unclassified`. Extend the JSON (`backend/app/refdata/data/` and `frontend/src/engine/data/`) or set overrides.
 - **Mutual-fund look-through is mostly *estimated*** from SEBI category models, not live disclosures. Estimated splits are flagged in the UI and excluded from overlap; only *disclosed* portfolios contribute real constituent names to concentration/overlap.

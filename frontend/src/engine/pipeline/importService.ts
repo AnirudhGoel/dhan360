@@ -3,10 +3,26 @@
 
 import { Store } from "../store/store";
 import { ImportBatch } from "../store/model";
-import { AssetClass } from "../taxonomy";
+import { AssetClass, Source } from "../taxonomy";
 import { ParseResult, ParsedHolding } from "../parse/types";
 import { findOrCreateAccount, findOrCreateInstrument, upsertHolding } from "./reconcile";
 import { classifyInstrument, loadOverrideIndex } from "./classifyService";
+
+/**
+ * Remove tradebook-derived positions that a priced snapshot doesn't confirm.
+ * A tradebook's "net open position" is only reliable with complete trade history; when a real
+ * holdings snapshot (Zerodha holdings / CAS) exists for an account, IT is the ground truth for
+ * what's currently held. Unconfirmed tradebook positions (sold, transferred out, or skewed by a
+ * split/bonus) must not be added to net worth. Tradebook-only accounts keep their positions.
+ */
+export function pruneUnbackedTradebookHoldings(store: Store): number {
+  const pricedAccounts = new Set(store.holdings.filter((h) => h.current_value != null).map((h) => h.account_id));
+  const before = store.holdings.length;
+  store.holdings = store.holdings.filter(
+    (h) => !(h.source === Source.ZERODHA_TRADEBOOK && h.current_value == null && pricedAccounts.has(h.account_id)),
+  );
+  return before - store.holdings.length;
+}
 
 function persistTransactions(store: Store, accountId: number, instrumentId: number, h: ParsedHolding, importId: number): void {
   if (!h.transactions.length) return;
@@ -67,5 +83,16 @@ export function processParseResult(store: Store, result: ParseResult): ImportBat
   batch.count_duplicate = duplicate;
   batch.count_skipped = skipped;
   batch.count_unclassified = unclassified;
+
+  const pruned = pruneUnbackedTradebookHoldings(store);
+  if (pruned > 0) {
+    const diags = JSON.parse(batch.diagnostics || "[]");
+    diags.push({
+      level: "info",
+      message: `Excluded ${pruned} tradebook position(s) not present in your current holdings — likely sold, transferred out, or affected by a split/bonus. Their trades are kept for history; they don't count toward net worth.`,
+      context: null,
+    });
+    batch.diagnostics = JSON.stringify(diags);
+  }
   return batch;
 }

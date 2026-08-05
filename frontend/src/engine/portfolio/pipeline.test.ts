@@ -84,3 +84,39 @@ RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1
     }
   });
 });
+
+describe("tradebook positions not in the holdings snapshot don't inflate net worth", () => {
+  // Holdings: only RELIANCE is currently held (market value 29,505).
+  const HOLDINGS = `Symbol,ISIN,Quantity Available,Average Price,Previous Closing Price
+RELIANCE,INE002A01018,10,2400,2950.5
+`;
+  // Tradebook shows RELIANCE (held) + WIPRO with a net open position that was actually sold/
+  // transferred (or has incomplete sell history) — WIPRO is NOT in the current holdings.
+  const TRADEBOOK = `symbol,isin,trade_type,quantity,price,trade_date,trade_id
+RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1
+WIPRO,INE075A01022,buy,100,285,2022-05-01,T2
+`;
+
+  it("excludes the unbacked tradebook position (WIPRO), keeps net worth at the holdings value", () => {
+    for (const order of [["h", "t"], ["t", "h"]] as const) {
+      const store = new Store();
+      for (const step of order) {
+        if (step === "h") processParseResult(store, parseZerodhaHoldings(HOLDINGS));
+        else processParseResult(store, parseZerodhaTradebook(TRADEBOOK));
+      }
+      const s = summary(store);
+      expect(store.holdings.length).toBe(1);        // WIPRO pruned
+      expect(s.net_worth).toBeCloseTo(29505, 0);    // NOT 29505 + 28500 (WIPRO at cost)
+      expect(store.holdings[0].source).not.toBe("zerodha_tradebook");
+    }
+  });
+
+  it("but a tradebook-only portfolio (no holdings file) keeps its positions", () => {
+    const store = new Store();
+    processParseResult(store, parseZerodhaTradebook(TRADEBOOK));
+    // No priced snapshot exists → nothing is pruned; both positions stand (valued at cost).
+    expect(store.holdings.length).toBe(2);
+    const s = summary(store);
+    expect(s.net_worth).toBeCloseTo(24000 + 28500, 0);
+  });
+});

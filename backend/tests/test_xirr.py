@@ -146,3 +146,31 @@ def test_holdings_and_tradebook_not_double_counted(db, order):
     assert len(holdings) == 1, f"expected one position, got {len(holdings)} (order={order})"
     assert abs(holdings[0].current_value - 29505.0) < 1  # market value, NOT 29505 + 24000
     assert abs(holdings[0].invested_value - 24000.0) < 1  # cost basis preserved for P&L
+
+
+@pytest.mark.parametrize("order", [("h", "t"), ("t", "h")])
+def test_unbacked_tradebook_positions_pruned_when_holdings_present(db, order):
+    session, models = db
+    from app.parsers import zerodha_holdings, zerodha_tradebook
+    from app.services.import_service import process_parse_result
+
+    holdings_csv = (
+        "Symbol,ISIN,Quantity Available,Average Price,Previous Closing Price\n"
+        "RELIANCE,INE002A01018,10,2400,2950.5\n"
+    )
+    # RELIANCE is held; WIPRO shows a tradebook net position but isn't in the holdings snapshot.
+    tradebook_csv = (
+        "symbol,isin,trade_type,quantity,price,trade_date,trade_id\n"
+        "RELIANCE,INE002A01018,buy,10,2400,2023-01-01,T1\n"
+        "WIPRO,INE075A01022,buy,100,285,2022-05-01,T2\n"
+    )
+    for step in order:
+        parsed = zerodha_holdings.parse(holdings_csv) if step == "h" else zerodha_tradebook.parse(tradebook_csv)
+        process_parse_result(session, parsed)
+        session.commit()
+
+    holdings = session.query(models.Holding).all()
+    assert len(holdings) == 1, f"WIPRO should be pruned (order={order})"
+    assert holdings[0].source != "zerodha_tradebook"
+    total = sum(h.current_value if h.current_value is not None else (h.invested_value or 0) for h in holdings)
+    assert abs(total - 29505.0) < 1  # NOT 29505 + 28500 (WIPRO at cost)

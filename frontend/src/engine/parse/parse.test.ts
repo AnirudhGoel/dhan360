@@ -77,6 +77,25 @@ RELIANCE,INE002A01018,buy,8,2700,2024-02-01,T3
     expect(rel.transactions.length).toBe(3);
   });
 
+  it("finds the real header under broker banner/summary rows (Zerodha Console shape)", () => {
+    // Console exports prefix the table with a title + a Summary block, and a leading empty column.
+    const consoleCsv = `,,,,,
+,Client ID,OH3367,,,
+,Equity Holdings Statement as on 2026-08-04,,,,
+,Summary,,,,
+,Invested Value,3893376.29,,,
+,Present Value,5589926.81,,,
+,Symbol,ISIN,Sector,Quantity Available,Average Price,Previous Closing Price
+,RELIANCE,INE002A01018,ENERGY,10,2400,2950.5
+,TCS,INE467B01029,IT,5,3100,3850
+`;
+    const res = parseZerodhaHoldings(consoleCsv, "console.csv");
+    expect(res.holdings.length).toBe(2); // NOT tricked into using the "Client ID" row as header
+    const rel = res.holdings.find((x) => x.symbol === "RELIANCE")!;
+    expect(rel.quantity).toBe(10);
+    expect(rel.current_value).toBe(29505); // 10 × 2950.5 (no Cur. val column → qty × prev close)
+  });
+
   it("reads an .xlsx sheet into parser-ready CSV (holdings)", () => {
     // Mirrors the lazy XLSX.sheet_to_csv step in clientApi.fileToText for .xlsx uploads.
     const ws = XLSX.utils.aoa_to_sheet([

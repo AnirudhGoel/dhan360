@@ -9,23 +9,31 @@ from typing import Iterable
 
 
 def sniff_rows(content: str) -> list[dict[str, str]]:
-    """Parse CSV text into a list of dict rows, tolerating a few junk header lines.
+    """Parse CSV text into a list of dict rows, locating the real header under banner rows.
 
-    Broker exports often prefix the real table with title/disclaimer lines. We find the
-    first line that looks like a header (>=3 comma-separated cells) and parse from there.
+    Broker exports often prefix the real table with title/summary lines (e.g. Zerodha Console:
+    "Client ID", "Present Value"). Those have only 1–2 populated cells, whereas the header and data
+    rows are broad — so we take the first well-populated row as the header and parse from there.
     """
-    lines = content.splitlines()
-    start = 0
-    for i, line in enumerate(lines):
-        if line.count(",") >= 2 and any(c.isalpha() for c in line):
-            start = i
-            break
-    reader = csv.DictReader(io.StringIO("\n".join(lines[start:])))
+    grid = [row for row in csv.reader(io.StringIO(content))]
+    grid = [row for row in grid if any((c or "").strip() for c in row)]  # drop blank/banner-blank rows
+    if not grid:
+        return []
+
+    def filled(r: list[str]) -> int:
+        return sum(1 for c in r if (c or "").strip())
+
+    max_filled = max(filled(r) for r in grid)
+    threshold = max(3, -(-max_filled // 2))  # ceil(max_filled / 2), min 3
+    header_idx = next((i for i, r in enumerate(grid) if filled(r) >= threshold), 0)
+
+    header = [(c or "").strip() for c in grid[header_idx]]
     rows: list[dict[str, str]] = []
-    for row in reader:
-        # Drop fully-empty rows.
-        if any((v or "").strip() for v in row.values()):
-            rows.append({(k or "").strip(): (v or "").strip() for k, v in row.items()})
+    for r in grid[header_idx + 1:]:
+        if not any((c or "").strip() for c in r):
+            continue
+        rec = {header[j]: (r[j] or "").strip() for j in range(min(len(header), len(r))) if header[j]}
+        rows.append(rec)
     return rows
 
 

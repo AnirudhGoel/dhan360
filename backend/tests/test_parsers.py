@@ -87,6 +87,26 @@ def test_zerodha_tradebook_combines_files_and_dedups_by_trade_id():
     assert len(rel.transactions) == 3
 
 
+def test_holdings_header_found_under_console_banner_rows():
+    # Console exports prefix the table with a title + Summary block and a leading empty column.
+    console_csv = (
+        ",,,,,\n"
+        ",Client ID,OH3367,,,\n"
+        ",Equity Holdings Statement as on 2026-08-04,,,,\n"
+        ",Summary,,,,\n"
+        ",Invested Value,3893376.29,,,\n"
+        ",Present Value,5589926.81,,,\n"
+        ",Symbol,ISIN,Sector,Quantity Available,Average Price,Previous Closing Price\n"
+        ",RELIANCE,INE002A01018,ENERGY,10,2400,2950.5\n"
+        ",TCS,INE467B01029,IT,5,3100,3850\n"
+    )
+    res = zerodha_holdings.parse(console_csv)
+    assert len(res.holdings) == 2  # not tricked into using the "Client ID" row as the header
+    rel = next(h for h in res.holdings if h.symbol == "RELIANCE")
+    assert rel.quantity == 10
+    assert rel.current_value == 29505.0  # 10 × 2950.5
+
+
 def test_xlsx_upload_converts_to_csv():
     import io
 

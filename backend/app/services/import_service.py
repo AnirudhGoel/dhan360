@@ -11,8 +11,8 @@ import json
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from app.db.models import Account, ImportBatch, Instrument, Transaction
-from app.domain.taxonomy import AssetClass
+from app.db.models import Account, Holding, ImportBatch, Instrument, Transaction
+from app.domain.taxonomy import AssetClass, Source
 from app.parsers.base import ParsedHolding, ParseResult
 from app.reconcile.reconciler import (
     find_or_create_account,
@@ -49,6 +49,29 @@ def _persist_transactions(
             source=h.source.value,
             import_id=import_id,
         ))
+
+
+def _prune_unbacked_tradebook_holdings(db: Session) -> int:
+    """Remove tradebook-derived positions that a priced snapshot doesn't confirm.
+
+    A tradebook's "net open position" is only reliable with complete trade history; when a real
+    holdings snapshot (Zerodha holdings / CAS) exists for an account, IT is the ground truth for
+    what's currently held. Unconfirmed tradebook positions (sold, transferred out, or skewed by a
+    split/bonus) must not inflate net worth. Tradebook-only accounts keep their positions.
+    """
+    priced_accounts = {
+        h.account_id for h in db.query(Holding).filter(Holding.current_value.isnot(None)).all()
+    }
+    if not priced_accounts:
+        return 0
+    unbacked = db.query(Holding).filter(
+        Holding.source == Source.ZERODHA_TRADEBOOK.value,
+        Holding.current_value.is_(None),
+        Holding.account_id.in_(priced_accounts),
+    ).all()
+    for h in unbacked:
+        db.delete(h)
+    return len(unbacked)
 
 
 def process_parse_result(db: Session, result: ParseResult) -> ImportBatch:
@@ -88,7 +111,21 @@ def process_parse_result(db: Session, result: ParseResult) -> ImportBatch:
     batch.count_duplicate = duplicate
     batch.count_skipped = skipped
     batch.count_unclassified = unclassified
-    batch.diagnostics = json.dumps([d.model_dump() for d in result.diagnostics])
+
+    diagnostics = [d.model_dump() for d in result.diagnostics]
+    db.flush()  # ensure all just-added holdings are visible to the prune query below
+    pruned = _prune_unbacked_tradebook_holdings(db)
+    if pruned > 0:
+        diagnostics.append({
+            "level": "info",
+            "message": (
+                f"Excluded {pruned} tradebook position(s) not present in your current holdings — "
+                "likely sold, transferred out, or affected by a split/bonus. Their trades are kept "
+                "for history; they don't count toward net worth."
+            ),
+            "context": None,
+        })
+    batch.diagnostics = json.dumps(diagnostics)
 
     db.flush()
     return batch

@@ -30,32 +30,28 @@ export function findCol(headers: string[], ...candidates: string[]): string | nu
   return null;
 }
 
-/** Parse CSV text into dict rows, skipping junk header lines above the real table. */
+/** Parse CSV text into dict rows, locating the real header even under broker banner/summary rows. */
 export function sniffRows(content: string): Record<string, string>[] {
-  const lines = content.split(/\r?\n/);
-  let start = 0;
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const commas = (line.match(/,/g) || []).length;
-    if (commas >= 2 && /[a-zA-Z]/.test(line)) {
-      start = i;
-      break;
-    }
-  }
-  const parsed = Papa.parse<Record<string, string>>(lines.slice(start).join("\n"), {
-    header: true,
-    skipEmptyLines: true,
-  });
+  const grid = (Papa.parse<string[]>(content, { skipEmptyLines: "greedy" }).data || []).filter(Array.isArray);
+  if (!grid.length) return [];
+
+  const filled = (r: string[]) => r.filter((c) => (c ?? "").toString().trim() !== "").length;
+  const maxFilled = Math.max(...grid.map(filled));
+  // The header is the first well-populated row. This skips title/summary banner rows that many
+  // exports (e.g. Zerodha Console: "Client ID", "Present Value") place above the real table —
+  // those have only 1–2 populated cells, while the header and data rows are broad.
+  const threshold = Math.max(3, Math.ceil(maxFilled * 0.5));
+  let headerIdx = grid.findIndex((r) => filled(r) >= threshold);
+  if (headerIdx < 0) headerIdx = 0;
+
+  const header = grid[headerIdx].map((x) => (x ?? "").toString().trim());
   const rows: Record<string, string>[] = [];
-  for (const row of parsed.data) {
-    const values = Object.values(row);
-    if (values.some((v) => (v ?? "").toString().trim())) {
-      const clean: Record<string, string> = {};
-      for (const [k, v] of Object.entries(row)) {
-        clean[(k ?? "").trim()] = (v ?? "").toString().trim();
-      }
-      rows.push(clean);
-    }
+  for (let i = headerIdx + 1; i < grid.length; i++) {
+    const vals = grid[i];
+    if (!vals.some((v) => (v ?? "").toString().trim())) continue;
+    const rec: Record<string, string> = {};
+    header.forEach((k, j) => { if (k) rec[k] = (vals[j] ?? "").toString().trim(); });
+    rows.push(rec);
   }
   return rows;
 }
