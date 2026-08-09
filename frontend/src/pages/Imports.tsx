@@ -91,6 +91,15 @@ export default function Imports() {
     catch (e: any) { setMsg({ kind: "err", text: e.message }); }
     finally { setBusy(null); }
   };
+  const reclassify = async () => {
+    setBusy("reclassify"); setMsg(null);
+    try {
+      const res: any = await api.reclassify();
+      setMsg({ kind: "ok", text: `Reclassified ${res.reclassified} instruments — no data was reset.` });
+      refreshAll();
+    } catch (e: any) { setMsg({ kind: "err", text: e.message }); }
+    finally { setBusy(null); }
+  };
   const resetAll = async () => {
     if (!confirm("Delete ALL local portfolio data? This cannot be undone.")) return;
     setBusy("reset"); setMsg(null);
@@ -108,6 +117,7 @@ export default function Imports() {
           DEMO ? undefined : (
             <>
               <button className="btn-ghost" onClick={loadSample} disabled={!!busy}>{busy === "sample" ? "Loading…" : "Load sample data"}</button>
+              <button className="btn-ghost" onClick={reclassify} disabled={!!busy} title="Re-run asset classification on all holdings without resetting data">{busy === "reclassify" ? "Reclassifying…" : "Reclassify"}</button>
               <button className="btn-ghost text-rose-600" onClick={resetAll} disabled={!!busy}>Reset</button>
             </>
           )

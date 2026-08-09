@@ -7,7 +7,7 @@ dhan360 favours transparency over false precision. Known limitations, kept curre
   - **Mutual funds** use actual NAV — from the statement, and (for period XIRR & the performance curve) fetched client-side from [mfapi.in](https://mfapi.in) by scheme code.
   - **Direct stocks/ETFs** use the broker **LTP/close** in your holdings file for current value. For **period** XIRR and the return curve they need *historical* closes, sourced from either the **Kite price proxy** (`services/kite-prices`) or a **historical-prices CSV** import.
 - A **tradebook-only** import has **no current value** until it's reconciled with a holdings import or a price source.
-- The **Kite feed** is opt-in and self-run: it needs your own Kite Connect app **with the Historical Data subscription**, and a **daily login** (the access token expires ~6 a.m.). Without it, equity period boundaries fall back to the price-CSV path and are flagged.
+- The **equity price feed** is powered by a shared `equity-prices` service that downloads NSE's public daily bhav-copy files — no credentials or API keys required. Closes are cached in a shared SQLite DB; a daily cron keeps it current. Point the client at it with `VITE_EQUITY_PRICES_URL`. Without the service, equity period boundaries fall back to the price-CSV import path and are flagged.
 
 ## XIRR & returns
 - **XIRR is computed** — a whole-portfolio/lifetime figure plus a configurable **period** XIRR — using your transaction history (tradebook / CAS) and boundary valuations, via a Newton + bisection solver.

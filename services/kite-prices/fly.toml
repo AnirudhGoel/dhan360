@@ -1,0 +1,35 @@
+# fly.toml — kite-prices deployment config
+# Deploy: fly deploy  (from services/kite-prices/)
+# Secrets: fly secrets set KITE_API_KEY=... KITE_API_SECRET=... KITE_USER_ID=... etc.
+
+app    = "dhan360-kite-prices"
+region = "bom"          # Mumbai — closest to Kite/Zerodha servers and IST timezone
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT                 = "8080"
+  EQUITY_CACHE_DB      = "/data/prices.db"
+  # EQUITY_PRICES_ORIGINS goes in fly secrets:
+  #   fly secrets set EQUITY_PRICES_ORIGINS=https://dhan360.in --app dhan360-kite-prices
+
+[mounts]
+  source      = "kite_prices_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https   = true
+  auto_stop_machines  = false
+  auto_start_machines = true
+
+  [http_service.concurrency]
+    type       = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus     = 1
+  memory   = "256mb"

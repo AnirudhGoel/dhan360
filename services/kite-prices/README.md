@@ -1,57 +1,57 @@
-# kite-prices — historical price proxy for dhan360
+# equity-prices — NSE price proxy for dhan360
 
-Kite's `api_secret` can't live in the browser and Kite's data endpoints don't allow browser
-(CORS) calls, so this small service — which **you** run and configure with **your** Kite creds —
-proxies historical-price requests for the dhan360 client.
+Serves historical daily closes for all NSE equities. Sourced from NSE's public
+bhav-copy archives — **no credentials, no API key, no login required**.
 
-It only touches **market prices**. Your holdings never pass through it: the client sends the list
-of symbols + a date range it needs, this returns daily closes, and the client fills its own local
-cache so direct-equity **period XIRR** and the **performance curve** work.
-
-Nothing is persisted. The Kite session lives in memory only.
-
-## Prerequisites
-
-- A **Kite Connect** app (`api_key` + `api_secret`) — https://developer.kite.trade
-- The **Historical Data** subscription active on that app (otherwise `/prices` returns errors).
-- In the Kite app settings, set the **Redirect URL** to `<this-service-url>/callback`.
+How it works: NSE publishes an end-of-day price file for every trading day at
+`archives.nseindia.com`. This service downloads those files, extracts EQ-series
+closes, and caches them in a local SQLite DB. A cron job keeps the cache current;
+`POST /seed` loads years of history in the background.
 
 ## Configure
 
 | Env var | Purpose |
 |---|---|
-| `KITE_API_KEY` | Kite Connect app key |
-| `KITE_API_SECRET` | Kite Connect app secret (used only for the daily login exchange) |
-| `KITE_PRICES_ORIGINS` | Comma-separated allowed browser origins, e.g. `https://dhan360.in` |
-| `KITE_ACCESS_TOKEN` | *(optional)* set a token directly and skip the `/login` flow |
+| `EQUITY_PRICES_ORIGINS` | Comma-separated allowed browser origins, e.g. `https://dhan360.in` |
+| `EQUITY_CACHE_DB` | Path to SQLite cache file (default: `prices.db` next to the script) |
+
+No other configuration needed.
 
 ## Run
 
 ```bash
 pip install -r requirements.txt
-KITE_API_KEY=... KITE_API_SECRET=... KITE_PRICES_ORIGINS=https://dhan360.in \
-  uvicorn app:app --port 8080
-# or: docker build -t kite-prices . && docker run -p 8080:8080 --env-file .env kite-prices
+
+EQUITY_PRICES_ORIGINS=https://dhan360.in \
+  uvicorn app:app --host 0.0.0.0 --port 8080
+
+# Docker
+docker build -t equity-prices .
+docker run -p 8080:8080 -v $(pwd)/data:/data \
+  -e EQUITY_CACHE_DB=/data/prices.db \
+  -e EQUITY_PRICES_ORIGINS=https://dhan360.in \
+  equity-prices
 ```
 
-## Daily login
+## Seed historical data
 
-Kite access tokens expire ~6am daily. Each morning (and after any restart):
+On first deploy, the cache is empty. Trigger a background seed (5 years is recommended):
 
-1. `GET /login` → returns `{ "login_url": ... }`.
-2. Open that URL, log in to Kite; it redirects to `/callback?request_token=...`.
-3. The service exchanges the token and holds it in memory. `GET /status` confirms.
+```bash
+curl -X POST "https://your-service/seed?years=5"
+```
 
-The dhan360 client detects a `401` and prompts you to reconnect.
+The seed runs in the background; check progress at `GET /status`. It takes
+roughly 5–10 minutes depending on your network. After that, the daily cron
+maintains the cache automatically.
 
 ## Endpoints
 
 | Method | Path | Purpose |
 |---|---|---|
 | `GET` | `/health` | liveness |
-| `GET` | `/status` | `{ authenticated, token_date }` |
-| `GET` | `/login` | returns the Kite login URL |
-| `GET` | `/callback?request_token=…` | completes login (Kite redirect target) |
-| `POST` | `/prices` | `{ symbols[], from_date, to_date, exchange? }` → `{ prices: { SYM: [[date, close]…] }, missing[] }` |
+| `GET` | `/status` | cache stats, last fetch date, seed progress |
+| `POST` | `/seed?years=N` | trigger background historical seed (default 5yr) |
+| `POST` | `/prices` | `{ symbols[], from_date, to_date }` → `{ prices: { SYM: [[date, close]…] }, missing[] }` |
 
-Point the dhan360 client at this service with `VITE_KITE_PRICES_URL=<this-service-url>`.
+Point the dhan360 client at this service with `VITE_EQUITY_PRICES_URL=<this-service-url>`.

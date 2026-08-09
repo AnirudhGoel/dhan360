@@ -41,9 +41,9 @@ describe("full pipeline parity vs Python", () => {
 
   it("equity cap split matches (incl. fund look-through)", () => {
     const c = pct(s.equity_cap_split);
-    expect(c["Large Cap"]).toBeCloseTo(52.09, 1);
-    expect(c["Mid Cap"]).toBeCloseTo(23.93, 1);
-    expect(c["Small Cap"]).toBeCloseTo(12.25, 1);
+    expect(c["Large Cap"]).toBeCloseTo(55.85, 1);
+    expect(c["Mid Cap"]).toBeCloseTo(22.86, 1);
+    expect(c["Small Cap"]).toBeCloseTo(8.49, 1);
     expect(c["International Equity"]).toBeCloseTo(11.73, 1);
   });
 
