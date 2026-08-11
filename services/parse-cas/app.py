@@ -70,7 +70,9 @@ async def parse_cas(request: Request, password: str = Form(""), file: UploadFile
         msg = str(exc).lower()
         if "password" in msg or "decrypt" in msg:
             raise HTTPException(422, "Incorrect password or the PDF could not be decrypted.")
-        raise HTTPException(422, f"Could not parse this CAS PDF: {exc!s}")
+        if "issuer" in msg or "identify" in msg:
+            raise HTTPException(422, "MFCentral statements aren't supported yet — casparser can't identify the issuer. Download a CAS directly from mycams.com (CAMS) or kfintech.com (KFintech) and upload that instead.")
+        raise HTTPException(422, f"Could not parse this CAS PDF. ({exc!s})")
     finally:
         del data  # drop the bytes promptly; nothing is persisted
 
