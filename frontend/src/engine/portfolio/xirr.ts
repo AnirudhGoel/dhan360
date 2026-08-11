@@ -121,8 +121,24 @@ export function instrumentXirr(store: Store, inst: Instrument, start: string | n
     flags.insufficient_data = true;
     return { label: inst.name, xirr: null, start_value: round(startValue), end_value: round(endValue), invested: round(invested), current_value: round(currentVal), covered_value: 0, flags, flows: [] };
   }
+  // Lifetime XIRR: if the oldest cashflow is less than one year old, the annualised rate is
+  // unreliable (e.g. a 3-month gain annualises to a misleading 200%). Exclude rather than show.
+  if (start === null && cashflows.length > 0) {
+    const earliest = cashflows.reduce((m, [d]) => (d < m ? d : m), cashflows[0][0]);
+    if (days(earliest, todayISO()) < 365) {
+      flags.insufficient_data = true;
+      return { label: inst.name, xirr: null, start_value: 0, end_value: round(endValue), invested: round(invested), current_value: round(currentVal), covered_value: 0, flags, flows: [] };
+    }
+  }
+
   if (endValue > 0) cashflows.push([endDate, endValue]);
   const rate = xirr(cashflows);
+  // Period XIRR with no solvable rate (e.g. closing price unavailable → all-negative flows):
+  // exclude from the aggregate merge so broken cashflows don't distort the group rate.
+  if (end !== null && rate === null) {
+    flags.insufficient_data = true;
+    return { label: inst.name, xirr: null, start_value: round(startValue), end_value: round(endValue), invested: round(invested), current_value: round(currentVal), covered_value: 0, flags, flows: [] };
+  }
   return { label: inst.name, xirr: rate, start_value: round(startValue), end_value: round(endValue), invested: round(invested), current_value: round(currentVal), covered_value: round(currentVal), flags, flows: cashflows };
 }
 

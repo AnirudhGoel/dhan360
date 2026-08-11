@@ -29,7 +29,16 @@ export default function Rebalancing() {
   });
 
   const targets = targetsQ.data?.targets ?? [];
-  const editing = edit ?? Object.fromEntries(targets.map((t) => [t.bucket, t.target_pct]));
+
+  // Use the plan's lines as the canonical bucket list: any asset class with current value or
+  // an existing target should appear in the editor, even if no targets have been set yet.
+  const planBuckets = (planQ.data?.lines ?? [])
+    .filter((l) => l.current_value > 0 || l.target_pct > 0)
+    .map((l) => l.bucket);
+  const defaultEditing = Object.fromEntries(
+    planBuckets.map((b) => [b, targets.find((t) => t.bucket === b)?.target_pct ?? 0])
+  );
+  const editing = edit ?? defaultEditing;
   const editSum = Object.values(editing).reduce((a, b) => a + b, 0);
 
   const saveTargets = async () => {
@@ -48,7 +57,7 @@ export default function Rebalancing() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card title="Target Allocation" className="lg:col-span-1"
-          actions={edit ? <button className="btn-primary !py-1 !px-2 text-xs" disabled={Math.abs(editSum - 100) > 0.5} onClick={saveTargets}>Save</button> : undefined}>
+          actions={Object.keys(editing).length > 0 ? <button className="btn-primary !py-1 !px-2 text-xs" disabled={Math.abs(editSum - 100) > 0.5} onClick={saveTargets}>Save</button> : undefined}>
           {targetsQ.isLoading ? (
             <Loading />
           ) : (

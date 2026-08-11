@@ -210,10 +210,31 @@ class XirrEngine:
                 current_value=round(current_val, 2), covered_value=0.0, flags=flags, flows=[],
             )
 
+        # Lifetime XIRR: if the oldest cashflow is less than one year old, the annualised rate
+        # is unreliable (a 3-month gain annualises to a misleading figure). Exclude.
+        if start is None and cashflows:
+            earliest = min(d for d, _ in cashflows)
+            if (date.today() - earliest).days < 365:
+                flags.insufficient_data = True
+                return XirrResult(
+                    label=instrument.name, xirr=None, start_value=0.0,
+                    end_value=round(end_value, 2), invested=round(invested, 2),
+                    current_value=round(current_val, 2), covered_value=0.0, flags=flags, flows=[],
+                )
+
         if end_value > 0:
             cashflows.append((end_date, end_value))
 
         rate = xirr(cashflows)
+        # Period XIRR with no solvable rate (e.g. closing price unavailable → all-negative
+        # flows): exclude from the aggregate merge so broken cashflows don't distort the group.
+        if end is not None and rate is None:
+            flags.insufficient_data = True
+            return XirrResult(
+                label=instrument.name, xirr=None, start_value=round(start_value, 2),
+                end_value=round(end_value, 2), invested=round(invested, 2),
+                current_value=round(current_val, 2), covered_value=0.0, flags=flags, flows=[],
+            )
         return XirrResult(
             label=instrument.name, xirr=rate, start_value=round(start_value, 2),
             end_value=round(end_value, 2), invested=round(invested, 2),

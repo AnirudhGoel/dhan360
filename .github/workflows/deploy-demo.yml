@@ -35,6 +35,9 @@ jobs:
         run: npm ci
       - name: Build client app (fully in-browser; seeds sample data on first visit)
         working-directory: frontend
+        env:
+          VITE_PARSE_CAS_URL: ${{ secrets.VITE_PARSE_CAS_URL }}
+          VITE_EQUITY_PRICES_URL: ${{ secrets.VITE_EQUITY_PRICES_URL }}
         run: npm run build:client
       - uses: actions/upload-pages-artifact@v3
         with:
