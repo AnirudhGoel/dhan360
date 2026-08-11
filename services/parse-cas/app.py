@@ -66,11 +66,11 @@ async def parse_cas(request: Request, password: str = Form(""), file: UploadFile
 
     try:
         parsed = casparser.read_cas_pdf(io.BytesIO(data), password, output="dict")
-    except Exception as exc:  # noqa: BLE001 — surface a clean message, never the raw stack
+    except Exception as exc:  # noqa: BLE001
         msg = str(exc).lower()
         if "password" in msg or "decrypt" in msg:
             raise HTTPException(422, "Incorrect password or the PDF could not be decrypted.")
-        raise HTTPException(422, "Could not parse this CAS PDF. Is it a CAMS/KFintech statement?")
+        raise HTTPException(422, f"Could not parse this CAS PDF: {exc!s}")
     finally:
         del data  # drop the bytes promptly; nothing is persisted
 
