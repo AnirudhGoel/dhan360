@@ -269,7 +269,6 @@ export default function Imports() {
 const MF_CAS_LINKS = [
   { name: "CAMS (CAMS + KFintech consolidated)", url: "https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" },
   { name: "KFintech CAS", url: "https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" },
-  { name: "MF Central", url: "https://app.mfcentral.com/" },
 ];
 const DEMAT_CAS_LINKS = [
   { name: "NSDL e-CAS", url: "https://nsdlcas.nsdl.com/" },
