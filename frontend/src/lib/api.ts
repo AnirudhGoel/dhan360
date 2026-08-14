@@ -126,8 +126,9 @@ const httpApi = {
     count: number; total_invested_out: number; total_in: number;
   }>("/api/transactions"),
   performance: () => http<{
-    points: { date: string; nav: number; return_pct: number; value: number; invested: number }[];
-    covered_value: number; covered_pct: number; final_return_pct: number; note: string;
+    mf:       { points: { date: string; nav: number; return_pct: number; value: number; invested: number }[]; available: boolean; covered_value: number; covered_pct: number; final_return_pct: number; note: string };
+    equity:   { points: { date: string; nav: number; return_pct: number; value: number; invested: number }[]; available: boolean; covered_value: number; covered_pct: number; final_return_pct: number; note: string };
+    combined: { points: { date: string; nav: number; return_pct: number; value: number; invested: number }[]; available: boolean; covered_value: number; covered_pct: number; final_return_pct: number; note: string };
   }>("/api/analytics/performance"),
   mutualFunds: () => http<any>("/api/mutual-funds"),
   stocks: () => http<any>("/api/stocks"),

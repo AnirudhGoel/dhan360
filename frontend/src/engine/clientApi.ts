@@ -18,7 +18,7 @@ import { transactionsPayload } from "./portfolio/transactionsView";
 import { mutualFundAnalysis, stockConcentration, portfolioOverlap, stockEtfAnalysis } from "./portfolio/analysis";
 import { rebalancePlan } from "./portfolio/rebalance";
 import { portfolioXirr } from "./portfolio/xirr";
-import { mfPerformanceCurve } from "./portfolio/performance";
+import { portfolioPerformance } from "./portfolio/performance";
 import { populateBoundaryPrices } from "./prices";
 import { populateEquityBoundaryPrices } from "./equityPrices";
 import { ASSET_CLASS_ORDER, DebtSubClass, EquitySubClass, GoldSubClass, InstrumentType } from "./taxonomy";
@@ -88,7 +88,7 @@ export const clientApi = {
   async concentration() { await init(); return stockConcentration(store); },
   async overlap() { await init(); return portfolioOverlap(store); },
   async rebalance(mode: string, newMoney = 0) { await init(); return rebalancePlan(store, mode as any, newMoney); },
-  async performance() { await init(); return mfPerformanceCurve(store); },
+  async performance() { await init(); return portfolioPerformance(store); },
 
   async xirr(scope: string, from?: string, to?: string) {
     await init();
