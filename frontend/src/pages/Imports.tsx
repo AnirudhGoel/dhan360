@@ -5,32 +5,29 @@ import { Card, Loading, PageHeader } from "../components/Common";
 import { DEMO, REPO_URL } from "../lib/demo";
 
 interface SourceDef { id: string; label: string; accept: string; hint: string; advanced?: boolean }
-interface SourceGroup { key: string; title: string; blurb?: string; sources: SourceDef[] }
+interface SourceGroup { key: string; title: string; sources: SourceDef[] }
 
-// Grouped by "what do you have", with plain-English hints for what each file unlocks.
 const SOURCE_GROUPS: SourceGroup[] = [
   {
     key: "equity",
     title: "Stocks & ETFs",
-    blurb: "From Zerodha Console. Using another broker? Use the Generic CSV.",
     sources: [
       { id: "zerodha_holdings", label: "Zerodha — Holdings", accept: ".csv",
-        hint: "Your current positions & value → powers allocation, net worth and P&L. (Console → Portfolio → Holdings.)" },
+        hint: "Console → Portfolio → Holdings. Powers allocation, net worth and current value." },
       { id: "zerodha_tradebook", label: "Zerodha — Tradebook", accept: ".csv",
-        hint: "Your buy/sell history → unlocks XIRR and the performance curve. Best paired with Holdings. (Console → Reports → Tradebook.)" },
+        hint: "Console → Reports → Tradebook. Unlocks XIRR. Combine yearly files — Zerodha caps each at ~1 year." },
       { id: "generic_csv", label: "Other broker (Generic CSV)", accept: ".csv",
-        hint: "Any broker or source via a simple column template — see the docs for the format." },
+        hint: "Any broker via a simple column template — see the docs for the format." },
     ],
   },
   {
     key: "mf",
     title: "Mutual funds",
-    blurb: "A CAS (Consolidated Account Statement) covers every AMC in one file. Need one? Generate it below.",
     sources: [
       { id: "cas_pdf", label: "CAS PDF (CAMS / KFintech)", accept: ".pdf",
-        hint: "Easiest — upload the PDF and we parse it. Enter its password (usually your PAN)." },
+        hint: "Upload the PDF and we parse it. Password is usually your PAN." },
       { id: "cas_json", label: "CAS JSON (parse locally)", accept: ".json", advanced: true,
-        hint: "Max privacy: run casparser on your machine and upload the JSON — the file never leaves your device." },
+        hint: "Run casparser locally and upload the JSON output — nothing leaves your device." },
     ],
   },
   {
@@ -38,7 +35,7 @@ const SOURCE_GROUPS: SourceGroup[] = [
     title: "Advanced",
     sources: [
       { id: "prices_csv", label: "Historical prices CSV", accept: ".csv", advanced: true,
-        hint: "Only needed if you're not using the Kite price feed — fills equity prices so direct-stock period XIRR works." },
+        hint: "Only needed without the Kite price feed — fills equity prices for period XIRR." },
     ],
   },
 ];
@@ -151,8 +148,7 @@ export default function Imports() {
               if (!visible.length) return null;
               return (
                 <div key={g.key}>
-                  <div className="text-xs font-semibold text-ink mb-0.5">{g.title}</div>
-                  {g.blurb && <p className="text-[11px] text-ink-mute mb-2">{g.blurb}</p>}
+                  <div className="text-xs font-semibold text-ink mb-1.5">{g.title}</div>
                   <div className="grid grid-cols-2 gap-2">
                     {visible.map((s) => (
                       <button
@@ -165,10 +161,8 @@ export default function Imports() {
                     ))}
                   </div>
                   {g.key === "equity" && (
-                    <p className="mt-2 text-[11px] text-ink-mute bg-slate-50 rounded-lg px-3 py-2 leading-relaxed">
-                      💡 <span className="font-medium">Add both Holdings and Tradebook</span> for the full picture:
-                      Holdings gives your current value &amp; allocation, the Tradebook adds the dated history XIRR needs.
-                      Neither alone covers both.
+                    <p className="mt-1.5 text-[11px] text-ink-mute">
+                      💡 Import both Holdings and Tradebook for complete allocation + XIRR.
                     </p>
                   )}
                 </div>
@@ -178,7 +172,7 @@ export default function Imports() {
             <button
               type="button"
               onClick={() => setShowAdvanced((v) => {
-                if (v && source.advanced) setSource(ALL_SOURCES[0]); // don't leave a hidden source selected
+                if (v && source.advanced) setSource(ALL_SOURCES[0]);
                 return !v;
               })}
               className="text-[11px] text-ink-soft hover:text-brand underline"
@@ -187,13 +181,7 @@ export default function Imports() {
             </button>
 
             <div className="border-t border-slate-100 pt-3 space-y-3">
-              <p className="text-[11px] text-ink-soft">
-                <span className="font-medium text-ink">{source.label}</span> — {source.hint}
-                {source.accept === ".csv" && <span className="text-ink-mute"> .csv or .xlsx — no need to convert.</span>}
-                {source.id === "zerodha_tradebook" && (
-                  <span className="text-ink-mute"> Zerodha caps each export at ~1 year — select all your yearly files at once; we combine and de-duplicate them.</span>
-                )}
-              </p>
+              <p className="text-[11px] text-ink-mute">{source.hint}</p>
               <input
                 type="file"
                 accept={source.accept === ".csv" ? ".csv,.xlsx,.xls" : source.accept}
@@ -287,30 +275,35 @@ function LinkRow({ name, url }: { name: string; url: string }) {
 
 function GuidedCAS() {
   return (
-    <Card title="Don't have your CAS yet? Generate one" className="mb-4">
-      <p className="text-sm text-ink-mute mb-3">
-        A CAS (Consolidated Account Statement) is requested on the official RTA/depository site and
-        emailed to your <span className="font-medium">registered email</span> as a password-protected
-        PDF. dhan360 can't (and shouldn't) request it for you — but here's exactly where to do it, then
-        upload the PDF above.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <div className="text-xs font-semibold text-ink-soft mb-2">Mutual funds (CAMS / KFintech) — supported now</div>
-          <div className="space-y-2">{MF_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
+    <details className="mb-4 group rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+      <summary className="flex cursor-pointer select-none list-none items-center justify-between px-5 py-4 text-sm font-semibold text-ink hover:bg-slate-50">
+        <span>Don't have a CAS PDF yet? How to get one</span>
+        <svg
+          className="h-4 w-4 text-ink-mute transition-transform group-open:rotate-180"
+          viewBox="0 0 20 20" fill="currentColor"
+        >
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </summary>
+      <div className="px-5 pb-5 pt-4 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div className="text-xs font-semibold text-ink-soft mb-2">Mutual funds (CAMS / KFintech) — supported now</div>
+            <div className="space-y-2">{MF_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-ink-soft mb-2">Demat + MF (NSDL / CDSL) — parser coming soon</div>
+            <div className="space-y-2">{DEMAT_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
+          </div>
         </div>
-        <div>
-          <div className="text-xs font-semibold text-ink-soft mb-2">Demat + MF (NSDL / CDSL) — parser coming soon</div>
-          <div className="space-y-2">{DEMAT_CAS_LINKS.map((l) => <LinkRow key={l.url} {...l} />)}</div>
-        </div>
+        <ol className="mt-4 text-sm text-ink-soft list-decimal pl-5 space-y-1">
+          <li>Open the relevant site and request a <span className="font-medium">Detailed</span> statement for your desired period.</li>
+          <li>Enter your email &amp; PAN, and <span className="font-medium">set a password you'll remember</span> (often your PAN by default).</li>
+          <li>Open the email from the RTA/depository and download the PDF attachment.</li>
+          <li>Upload it above (Mutual fund CAS → <span className="font-medium">CAS PDF</span>) and enter that password.</li>
+        </ol>
       </div>
-      <ol className="mt-4 text-sm text-ink-soft list-decimal pl-5 space-y-1">
-        <li>Open the relevant site and request a <span className="font-medium">Detailed</span> statement for your desired period.</li>
-        <li>Enter your email &amp; PAN, and <span className="font-medium">set a password you'll remember</span> (often your PAN by default).</li>
-        <li>Open the email from the RTA/depository and download the PDF attachment.</li>
-        <li>Upload it above (Mutual fund CAS → <span className="font-medium">CAS PDF</span>) and enter that password.</li>
-      </ol>
-    </Card>
+    </details>
   );
 }
 
@@ -342,9 +335,6 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
 
   return (
     <Card title="Everything else" actions={<span className="text-xs text-ink-mute">PPF · FD · SGB · NPS · gold…</span>}>
-      <p className="text-[11px] text-ink-mute mb-3">
-        Assets with no statement to upload — add them by hand. Type drives classification.
-      </p>
       <div className="space-y-3">
         <input type="text" placeholder="Asset name (e.g. SBI PPF Account)" value={name} onChange={(e) => setName(e.target.value)}
           className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" />
@@ -365,7 +355,6 @@ function ManualEntry({ onDone }: { onDone: (text: string) => void }) {
         <button className="btn-primary w-full" onClick={submit} disabled={busy || !name || currentValue === ""}>
           {busy ? "Adding…" : "Add asset"}
         </button>
-        <p className="text-[11px] text-ink-mute">Type drives classification (e.g. SGB → Gold, PPF → Debt). A start date lets us compute XIRR — accurate for lump-sums like FDs/SGBs, approximate for staggered contributions (PPF/EPF).</p>
       </div>
     </Card>
   );
