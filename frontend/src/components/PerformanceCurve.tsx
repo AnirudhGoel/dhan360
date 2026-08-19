@@ -166,12 +166,12 @@ function CurveChart({
       {/* Selection stats */}
       {lo && hi && pRet !== null && (
         <div className="flex items-center gap-2 mt-2 px-1 text-xs">
-          <span className="text-ink-mute">
-            {fmtMonth(lo)} – {fmtMonth(hi)}
-          </span>
+          <span className="text-ink-mute">{fmtMonth(lo)} – {fmtMonth(hi)}</span>
+          <span className="text-ink-mute">Time-weighted return:</span>
           <span className={`font-semibold ${pRet >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
             {pRet >= 0 ? "+" : ""}{formatPct(pRet)}
           </span>
+          <span className="text-ink-mute text-[10px]">(XIRR in table below is money-weighted — both are correct, can differ)</span>
           <button
             onClick={clearSelection}
             className="ml-auto text-ink-mute hover:text-ink transition-colors"
