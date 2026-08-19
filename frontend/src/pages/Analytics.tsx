@@ -112,7 +112,14 @@ export default function Analytics() {
       />
 
       <div className="mb-4">
-        <PerformanceCurve />
+        <PerformanceCurve
+          onRangeSelect={(f, t) => {
+            // Convert exact dates to month-boundary dates that the slider/XIRR understand.
+            const fromDate = `${f.slice(0, 7)}-01`;
+            const toDate   = lastDayOf(t.slice(0, 7));
+            handleSlider(fromDate, toDate);
+          }}
+        />
       </div>
 
       <Card className="mb-4">

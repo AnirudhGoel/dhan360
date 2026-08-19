@@ -69,7 +69,18 @@ function runUnitizedNav(
 
   for (const d of eventDates) {
     const existing = mv(d, false);
-    if (unitsSyn > 0) navSyn = existing / unitsSyn;
+    if (unitsSyn > 0) {
+      // Only update navSyn when we have a real market value. If existing = 0 (price data
+      // gap — e.g. weekend, or equity prices service hasn't covered this date yet), we keep
+      // the previous navSyn rather than dividing by unitsSyn to get 0, which would corrupt
+      // all subsequent unit pricing (cf / 0 = Infinity).
+      if (existing > 0) navSyn = existing / unitsSyn;
+    } else if (existing > 0) {
+      // Bootstrap: there are already holdings (bought before the price data window starts)
+      // but no synthetic units have been issued yet. Treat this date as inception.
+      unitsSyn = existing / 1000;
+      navSyn   = 1000;
+    }
     const cf = -allTxns.filter((t) => t.date === d).reduce((a, t) => a + t.amount, 0);
     if (cf !== 0) {
       if (unitsSyn <= 0) { unitsSyn = cf / 1000; navSyn = 1000; }
@@ -173,6 +184,16 @@ async function buildEquityData(store: Store): Promise<EquityData | null> {
     return hi >= 0 ? s[hi][1] : null;
   }
 
+  // Find the earliest date we have any price data. Transactions before this date caused
+  // the 0-price gap bug: mv() returns 0 → navSyn = 0 → next buy gets Infinity units.
+  // By filtering equity transactions to the price-data window, the bootstrap logic in
+  // runUnitizedNav handles existing holdings (purchased before the window) correctly.
+  let firstPriceDate: string | null = null;
+  for (const [, ps] of priceSeries) {
+    if (ps.length && (!firstPriceDate || ps[0][0] < firstPriceDate)) firstPriceDate = ps[0][0];
+  }
+  const filteredTxns = firstPriceDate ? allTxns.filter((t) => t.date >= firstPriceDate!) : allTxns;
+
   // Reconstruct historical quantity by reversing from current holdings.
   // inclusive=true  → qty AFTER  transactions on `date` (same as quantityOn in xirr.ts)
   // inclusive=false → qty BEFORE transactions on `date`
@@ -201,7 +222,7 @@ async function buildEquityData(store: Store): Promise<EquityData | null> {
     return total;
   };
 
-  return { txns: allTxns, mv, configured: true, fetched: priceSeries.size > 0 };
+  return { txns: filteredTxns, mv, configured: true, fetched: priceSeries.size > 0 };
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
@@ -238,25 +259,27 @@ export async function portfolioPerformance(store: Store): Promise<{
         "Time-weighted, unitized NAV (rebased to 0% at inception) — isolates returns from how much you added and when.")
     : wrap([], false, "No mutual-fund transaction history available.");
 
-  // Equity curve
+  // Equity curve — txns are already filtered to the price-data window.
   const equityAvailable = !!equityData && equityData.configured && equityData.fetched;
   const equity = equityData
     ? wrap(
         equityAvailable ? runUnitizedNav(equityData.txns, equityData.mv, today) : [],
         equityAvailable,
         equityData.configured
-          ? "Time-weighted equity return (price-return only — dividends not included)."
+          ? "Time-weighted equity return (price-return only — dividends not included). Curve starts from the first date with price data."
           : "Equity price feed not configured. Set VITE_EQUITY_PRICES_URL to enable.",
       )
     : wrap([], false, "No equity transaction history available.");
 
-  // Combined portfolio curve — pools MF + equity transactions and market values.
+  // Combined curve — equity.txns already filtered; equity.mv correctly handles the
+  // bootstrap via the runUnitizedNav initialization for any pre-window holdings.
   const combinedTxns = [...(mfData?.txns ?? []), ...(equityData?.txns ?? [])];
   const combinedMv: MvFn = (d, inc) =>
-    (mfData?.mv(d, inc) ?? 0) + (equityData?.fetched ? equityData.mv(d, inc) : 0);
+    (mfData?.mv(d, inc) ?? 0) +
+    (equityData?.fetched && equityData.txns.length > 0 ? equityData.mv(d, inc) : 0);
   const combined = combinedTxns.length
     ? wrap(runUnitizedNav(combinedTxns, combinedMv, today), true,
-        "Portfolio time-weighted return (MF + equity combined). Equity is price-return only.")
+        "Portfolio time-weighted return (MF + equity combined). Equity is price-return only; curve starts from the first date with price data.")
     : wrap([], false, "No transaction history available.");
 
   return { mf, equity, combined };
